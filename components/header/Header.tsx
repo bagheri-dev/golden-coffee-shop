@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
 
-import { GiShoppingBag } from "react-icons/gi";
 import { FaMoon } from "react-icons/fa";
 import { MdWbSunny } from "react-icons/md";
 import { RxExit } from "react-icons/rx";
@@ -86,7 +85,7 @@ const Header: React.FC = () => {
                             <div className="relative group">
                                 {/*Cart Icon*/}
                                 <Link href="cart" className="py-3 cursor-pointer flex items-center gap-x-1">
-                                    <GiShoppingBag className="w-8 h-8" />
+                                    <FiShoppingCart className="w-8 h-8" />
                                 </Link>
                             </div>
                             {/*Theme Switch Btn*/}
@@ -207,7 +206,7 @@ const Header: React.FC = () => {
                                 {darkMode ? <span className="flex items-center gap-x-2"><FaMoon className="w-5 h-5" />تم تیره</span> : <span className="flex items-center gap-x-2"><MdWbSunny className="w-5 h-5" /> تم روشن</span>}
                             </div>
                             <Link className=" inline-flex items-center gap-x-2" href={"#"}>
-                                <GiShoppingBag className="w-5 h-5" />
+                                <FiShoppingCart className="w-5 h-5" />
                                 سبد خرید</Link>
                         </div>
                     </div>
