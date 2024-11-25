@@ -108,3 +108,10 @@
     @apply flex flex-col gap-y-3 pr-7 mt-3 text-sm text-zinc-600 dark:text-white;
   }
 }
+.menu {
+  transition: transform 0.3s ease-in-out;
+  transform: translateX(100%);
+}
+.menu-open {
+  transform: translateX(0);
+}
