@@ -41,56 +41,56 @@ const data = {
     navMain: [
         {
             title: "کاربران",
-            url: "#",
+            url: "/admin/users",
             icon: Users,
             items: [
                 {
                     title: "مدیریت کاربران",
-                    url: "#",
+                    url: "/admin/management-users",
                 },
             ],
         },
         {
             title: "مدیریت محصولات",
-            url: "/admin/product",
+            url: "/admin/products",
             icon: PackageSearch,
             isActive: true,
             items: [
                 {
                     title : "کالا ها",
-                    url : "#",
+                    url : "/admin/management-prducts",
 
                 },
                 {
                     title: "موجودی و قیمت",
-                    url: "#",
+                    url: "/admin/management-warehouse",
                 },
                 {
                     title: "سفارشات",
-                    url: "#",
+                    url: "/admin/orders",
                 },
             ],
         },
         {
             title: "مدیریت گروه ها",
-            url: "#",
+            url: "/admin/all-categories",
             icon: Layers3,
             items: [
                 {
                     title: "همه گروه ها",
-                    url: "#",
+                    url: "/admin/categories",
                 },
                 {
                     title: "همه زیر گروه ها",
-                    url: "#",
+                    url: "/admin/subcategories",
                 },
                 {
                     title: "مدیریت گروه",
-                    url: "#",
+                    url: "/admin/management-categories",
                 },
                 {
                     title: "مدیریت زیرگروه",
-                    url: "#",
+                    url: "/admin/management-subcategories",
                 },
             ],
         },
@@ -110,7 +110,7 @@ const data = {
     projects: [
         {
             name: "نمودار ها",
-            url: "#",
+            url: "/admin/site-statistics",
             icon: PieChart,
         },
     ],
