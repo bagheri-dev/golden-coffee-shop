@@ -3,7 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useState } from "react";
+import { useRef, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -21,6 +21,10 @@ import LogoType from "@/components/header/LogoType";
 import { FaUserTie } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
 import { IoHomeOutline } from "react-icons/io5";
+import { fetchLoginAdmin } from "@/apis/services/auth/auth.admin";
+import { IAdminLogin } from "@/types/auth/adminLogin";
+import { redirect } from "next/navigation";
+import toast from 'react-hot-toast';
 
 const formSchema = z.object({
     username: z.string().min(2, {
@@ -31,19 +35,38 @@ const formSchema = z.object({
 
 const ProfileForm = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [message, setMessage] = useState("");
     const [showPassword, setShowPassword] = useState("password")
 
-    const form = useForm({
+    const form = useForm<IAdminLogin>({
         resolver: zodResolver(formSchema),
     });
 
-    const onSubmit = async (data: any) => {
+    const onSubmit = async (data: IAdminLogin) => {
         setIsSubmitting(true);
-        setMessage("");
-        console.log(data);
-        setIsSubmitting(false)
+        try {
+            const response = await fetchLoginAdmin({
+                username: data.username,
+                password: data.password,
+            });
+
+            if (response && response.status === "success") {
+                localStorage.setItem("accessToken", response.token.accessToken);
+                localStorage.setItem("refreshToken", response.token.refreshToken);
+                toast.success("ورود موفقیت‌آمیز بود! 🎉");
+
+                setTimeout(() => {
+                    redirect("/admin")
+                }, 2000);
+            }
+        } catch (error: any) {
+            toast.error(error.message)
+            console.log(error);
+            
+        } finally {
+            setIsSubmitting(false);
+        }
     };
+
 
     return (
         <div>
@@ -65,7 +88,7 @@ const ProfileForm = () => {
                             render={({ field }) => (
                                 <FormItem>
                                     <FormLabel className="flex items-center gap-x-1">
-                                    <FaUserTie />
+                                        <FaUserTie />
                                         نام کاربری
                                     </FormLabel>
                                     <FormControl>
@@ -82,7 +105,7 @@ const ProfileForm = () => {
                                 <FormItem>
                                     <FormLabel className="flex items-center gap-x-2">
                                         رمز عبور
-                                         <div onClick={() => setShowPassword(prev => prev === "password" ? "text" : "password")}><FaRegEye /></div></FormLabel>
+                                        <div onClick={() => setShowPassword(prev => prev === "password" ? "text" : "password")}><FaRegEye /></div></FormLabel>
                                     <FormControl>
                                         <Input {...field} type={showPassword} />
                                     </FormControl>
@@ -93,16 +116,15 @@ const ProfileForm = () => {
                         <Button className={`${isSubmitting ? "bg-brown-300" : "bg-brown-900 text-lgh hover:bg-brown-600"}`} type="submit" disabled={isSubmitting}>
                             {isSubmitting ? "در حال ورود..." : "ورود"}
                         </Button>
-                        {message && <p>{message}</p>}
                         <div className="flex items-center justify-between">
                             <button className="bg-brown-900 py-1 px-2 rounded-lg text-gray-200 text-sm font-semibold" title="ادمین عزیز در صورت وجود هرگونه مشکل میتونی با ما تماس بگیری برای تماس کافی کلیک کنی">
                                 <a className="flex items-center gap-x-1" href="mailto:bagheri.develop@gmail.com">
-                                <BiSupport className="size-5" />پشتیبانی
+                                    <BiSupport className="size-5" />پشتیبانی
                                 </a>
                             </button>
                             <button className="bg-brown-900 py-1 px-2 rounded-lg text-gray-200 text-sm font-semibold" title="ادمین عزیز در صورت وجود هرگونه مشکل میتونی با ما تماس بگیری برای تماس کافی کلیک کنی">
                                 <a className="flex items-center gap-x-1" href="mailto:bagheri.develop@gmail.com">
-                                <IoHomeOutline className="size-5" />صفحه اصلی
+                                    <IoHomeOutline className="size-5" />صفحه اصلی
                                 </a>
                             </button>
                         </div>
