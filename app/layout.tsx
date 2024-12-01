@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
+import { Toaster } from 'react-hot-toast';
 
 const danaRegular = localFont({
   src: "./fonts/Dana/woff2/DanaFaNum-Regular.woff2",
@@ -23,6 +24,7 @@ export default function RootLayout({
       <body
         className={`${danaRegular.variable} antialiased bg-gray-100 dark:bg-zinc-800`}
       >
+        <Toaster position="top-left" reverseOrder={false} />
         {children}
       </body>
     </html>
