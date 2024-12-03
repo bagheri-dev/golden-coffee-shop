@@ -55,13 +55,17 @@ const ProfileForm = () => {
                 toast.success("ورود موفقیت‌آمیز بود! 🎉");
 
                 setTimeout(() => {
-                    redirect("/admin")
+                    if (response.data.user.role === "ADMIN") {
+                        redirect("/admin")
+                    } else {
+                        redirect("/")
+                    }
                 }, 2000);
             }
         } catch (error: any) {
             toast.error(error.message)
             console.log(error);
-            
+
         } finally {
             setIsSubmitting(false);
         }
