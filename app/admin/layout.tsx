@@ -9,7 +9,7 @@ export default async function Layout({ children }: { children: React.ReactNode }
 
   return (
     <SidebarProvider defaultOpen={defaultOpen}>
-      <AppSidebar />
+      <AppSidebar  className="border-2 border-slate-300 dark:border-slate-600 rounded-tl-lg rounded-bl-lg"/>
       <SidebarTrigger className="-ml-1" />
         {children}
     </SidebarProvider>

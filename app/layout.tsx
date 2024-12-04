@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html lang="fa" dir="rtl">
       <body
-        className={`${danaRegular.variable} antialiased bg-gray-100 dark:bg-zinc-800`}
+        className={`font-Dana antialiased bg-gray-100 dark:bg-zinc-800`}
       >
         <Toaster position="top-left" reverseOrder={false} />
         {children}

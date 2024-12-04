@@ -1,5 +1,9 @@
 export const urls = {
   admin: "/auth/login",
+  users : {
+    all : "/users",
+    byId : (id : string) => `/users/${id}`
+  },
   products: {
     all: "/products",
     byId: (id: string) => `/products/${id}`,
