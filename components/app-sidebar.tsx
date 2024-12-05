@@ -2,22 +2,15 @@
 
 import * as React from "react"
 import {
-    BookOpen,
-    Bot,
-    Frame,
-    Layers3,
+    Box,
+    CircleUserRound,
     LifeBuoy,
-    Map,
     PackageSearch,
-    PieChart,
+    ScanBarcode,
     Send,
-    Settings2,
-    SquareTerminal,
-    Users,
 } from "lucide-react"
 
 import { NavMain } from "@/components/nav-main"
-import { NavProjects } from "@/components/nav-projects"
 import { NavSecondary } from "@/components/nav-secondary"
 import { NavUser } from "@/components/nav-user"
 import {
@@ -30,7 +23,7 @@ import {
     SidebarMenuItem,
 } from "@/components/ui/sidebar"
 import Logo from "./header/Logo"
-import { title } from "process"
+import Link from "next/link"
 
 const data = {
     user: {
@@ -40,59 +33,28 @@ const data = {
     },
     navMain: [
         {
-            title: "کاربران",
-            url: "/admin/users",
-            icon: Users,
-            items: [
-                {
-                    title: "مدیریت کاربران",
-                    url: "/admin/management-users",
-                },
-            ],
+            title: "پنل",
+            url: "/admin",
+            icon: CircleUserRound,
+            isActive: true,
         },
         {
             title: "مدیریت محصولات",
             url: "/admin/products",
-            icon: PackageSearch,
+            icon: Box,
             isActive: true,
-            items: [
-                {
-                    title : "کالا ها",
-                    url : "/admin/management-prducts",
-
-                },
-                {
-                    title: "موجودی و قیمت",
-                    url: "/admin/management-warehouse",
-                },
-                {
-                    title: "سفارشات",
-                    url: "/admin/orders",
-                },
-            ],
         },
         {
-            title: "مدیریت گروه ها",
-            url: "/admin/all-categories",
-            icon: Layers3,
-            items: [
-                {
-                    title: "همه گروه ها",
-                    url: "/admin/categories",
-                },
-                {
-                    title: "همه زیر گروه ها",
-                    url: "/admin/subcategories",
-                },
-                {
-                    title: "مدیریت گروه",
-                    url: "/admin/management-categories",
-                },
-                {
-                    title: "مدیریت زیرگروه",
-                    url: "/admin/management-subcategories",
-                },
-            ],
+            title: "موجودی و قیمت",
+            url: "/admin/stock",
+            icon: PackageSearch,
+            isActive: true,
+        },
+        {
+            title: "سفارشات",
+            url: "/admin/orders",
+            icon: ScanBarcode,
+            isActive: true,
         },
     ],
     navSecondary: [
@@ -107,13 +69,6 @@ const data = {
             icon: Send,
         },
     ],
-    projects: [
-        {
-            name: "نمودار ها",
-            url: "/admin/site-statistics",
-            icon: PieChart,
-        },
-    ],
 }
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
@@ -123,7 +78,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                 <SidebarMenu>
                     <SidebarMenuItem>
                         <SidebarMenuButton size="lg" asChild>
-                            <a href="/">
+                            <Link href="/">
                                 <div className="flex aspect-square size-8 items-center justify-center rounded-lg text-sidebar-primary-foreground">
                                     <Logo />
                                 </div>
@@ -131,14 +86,13 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
                                     <span className="truncate font-semibold">پنل مدیریت سایت</span>
                                     <span className="truncate text-xs">دسترسی : ادمین</span>
                                 </div>
-                            </a>
+                            </Link>
                         </SidebarMenuButton>
                     </SidebarMenuItem>
                 </SidebarMenu>
             </SidebarHeader>
             <SidebarContent>
                 <NavMain items={data.navMain} />
-                <NavProjects projects={data.projects} />
                 <NavSecondary items={data.navSecondary} className="mt-auto" />
             </SidebarContent>
             <SidebarFooter>

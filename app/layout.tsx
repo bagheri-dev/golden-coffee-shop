@@ -1,13 +1,6 @@
 import type { Metadata } from "next";
-import localFont from "next/font/local";
 import "./globals.css";
 import { Toaster } from 'react-hot-toast';
-
-const danaRegular = localFont({
-  src: "./fonts/Dana/woff2/DanaFaNum-Regular.woff2",
-  variable: "--font-Dana-FaNum",
-  weight: "100 900",
-});
 
 export const metadata: Metadata = {
   title: "Golden Coffee",

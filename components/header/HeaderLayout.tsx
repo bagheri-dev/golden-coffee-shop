@@ -1,6 +1,7 @@
 "use client"
+import Image from "next/image";
 import Link from "next/link";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 import { FaMoon } from "react-icons/fa";
 import { MdWbSunny } from "react-icons/md";
@@ -14,37 +15,16 @@ import { IoChatboxEllipsesOutline } from "react-icons/io5";
 import { IoDocumentTextOutline } from "react-icons/io5";
 import { VscCallOutgoing } from "react-icons/vsc";
 import { FiShoppingCart } from "react-icons/fi";
-import AppLogo from "../svgs/app-logo";
-import AppLogoType from "../svgs/app-logo-type";
 
 
-const Header: React.FC = () => {
+const HeaderLayout: React.FC = () => {
     const [darkMode, setDarkMode] = useState(true);
     const [isShopSubmenuOpen, setIsShopSubmenuOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
-    useEffect(() => {
-        const savedTheme = localStorage.getItem("theme");
-        if (savedTheme === "dark") {
-            setDarkMode(true);
-            document.documentElement.classList.add("dark");
-        } else {
-            setDarkMode(false);
-            document.documentElement.classList.remove("dark");
-        }
-    }, []);
 
     const toggleTheme = () => {
-        setDarkMode((prev) => {
-            const newTheme = !prev;
-            if (newTheme) {
-                localStorage.setItem("theme", "dark");
-                document.documentElement.classList.add("dark");
-            } else {
-                localStorage.setItem("theme", "light");
-                document.documentElement.classList.remove("dark");
-            }
-            return newTheme;
-        });
+        setDarkMode((prev) => !prev);
+        document.documentElement.classList.toggle("dark");
     };
     const toggleShopSubmenu = () => {
         setIsShopSubmenuOpen((prev) => !prev);
@@ -57,15 +37,20 @@ const Header: React.FC = () => {
     return (
         <>
             <header
-                className="fixed top-9 right-0 left-0 z-50 hidden md:flex items-center w-[98%] lg:w-[90%] h-24 px-5 lg:px-10 py-5 mx-auto bg-black/50 rounded-3xl backdrop-blur-[6px]"
+                className="hidden md:flex items-center h-24 px-5 lg:px-10 py-5 mx-auto bg-black/50 backdrop-blur-[6px]"
             >
-                <div className="flex items-center justify-between w-full">
+                <div className="flex items-center justify-between w-[98%] lg:w-[90%] mx-auto">
                     {/*Logo & Menu*/}
                     <nav className="flex items-center gap-x-6 lg:gap-x-9 h-14">
                         {/*Logo*/}
                         <Link href="/">
                             <div className="shrink-0">
-                                <AppLogo className="text-orange-300" />
+                                <Image
+                                    src="/images/app-logo.png"
+                                    alt="Golden Coffee"
+                                    width={56}
+                                    height={56}
+                                />
                             </div></Link>
                         {/*Menu*/}
                         <ul
@@ -131,8 +116,19 @@ const Header: React.FC = () => {
                         {/* Nav Header */}
                         <div className="flex items-center justify-between pb-5 mb-6 border-b border-b-gray-100 dark:border-b-white/10">
                             <div className="flex gap-x-3.5">
-                                <AppLogo className="text-orange-300" />
-                                <AppLogoType className="text-orange-300" />
+                                <Image
+                                    src="/images/app-logo.png"
+                                    alt="Golden Coffee"
+                                    width={41}
+                                    height={40}
+                                />
+                                <Image
+                                    src="/images/svgs/app-logo-type.svg"
+                                    alt="app logo type"
+                                    width={100}
+                                    height={40}
+                                    className="text-orange-300"
+                                />
                             </div>
                             <FaXmark className="w-5 h-5 text-zinc-600 dark:text-white" onClick={toggleMenu} />
                         </div>
@@ -218,7 +214,13 @@ const Header: React.FC = () => {
                 {/* Logo type */}
                 <div>
                     <Link href="/">
-                        <AppLogoType className="text-orange-300" />
+                        <Image
+                            src="/images/svgs/app-logo-type.svg"
+                            alt="app logo type"
+                            width={100}
+                            height={40}
+                            className="text-orange-300"
+                        />
                     </Link>
                 </div>
                 {/* Cart Icon */}
@@ -233,4 +235,4 @@ const Header: React.FC = () => {
     );
 }
 
-export default Header;
+export default HeaderLayout;

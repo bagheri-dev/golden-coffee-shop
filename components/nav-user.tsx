@@ -1,19 +1,15 @@
-"use client"
+"use client";
 
-import {
-  BadgeCheck,
-  Bell,
-  ChevronsUpDown,
-  CreditCard,
-  LogOut,
-  Sparkles,
-} from "lucide-react"
+import { useEffect, useState } from "react";
+import { FaMoon } from "react-icons/fa";
+import { MdWbSunny } from "react-icons/md";
+import { ChevronsUpDown, LogOut } from "lucide-react";
 
 import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-} from "@/components/ui/avatar"
+} from "@/components/ui/avatar";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,24 +18,47 @@ import {
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu"
+} from "@/components/ui/dropdown-menu";
 import {
   SidebarMenu,
   SidebarMenuButton,
   SidebarMenuItem,
   useSidebar,
-} from "@/components/ui/sidebar"
+} from "@/components/ui/sidebar";
 
 export function NavUser({
   user,
 }: {
   user: {
-    name: string
-    email: string
-    avatar: string
-  }
+    name: string;
+    email: string;
+    avatar: string;
+  };
 }) {
-  const { isMobile } = useSidebar()
+  const [darkMode, setDarkMode] = useState(true);
+  const { isMobile } = useSidebar();
+
+  useEffect(() => {
+    const savedTheme = localStorage.getItem("theme");
+    if (savedTheme === "dark") {
+      setDarkMode(true);
+      document.documentElement.classList.add("dark");
+    } else {
+      setDarkMode(false);
+      document.documentElement.classList.remove("dark");
+    }
+  }, []);
+
+  const toggleTheme = () => {
+    setDarkMode((prev) => !prev);
+    if (!darkMode) {
+      document.documentElement.classList.add("dark");
+      localStorage.setItem("theme", "dark");
+    } else {
+      document.documentElement.classList.remove("dark");
+      localStorage.setItem("theme", "light");
+    }
+  };
 
   return (
     <SidebarMenu>
@@ -81,12 +100,32 @@ export function NavUser({
             </DropdownMenuLabel>
             <DropdownMenuSeparator />
             <DropdownMenuItem>
+              <div
+                className="w-full cursor-pointer transition-all inline-flex items-center gap-x-2"
+                id="toggle-theme"
+                onClick={toggleTheme}
+              >
+
+                {darkMode ? (
+                  <>
+                    <FaMoon className="w-5 h-5" />
+                    <span>تم تیره</span>
+                  </>
+                ) : (
+                  <>
+                    <MdWbSunny className="w-5 h-5" />
+                    <span>تم روشن</span>
+                  </>
+                )}
+              </div>
+            </DropdownMenuItem>
+            <DropdownMenuItem>
               <LogOut />
-              Log out
+              خروج از سیستم
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
-    </SidebarMenu>
-  )
+    </SidebarMenu >
+  );
 }
