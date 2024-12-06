@@ -19,10 +19,15 @@ import { fetchOrders } from "@/apis/services/orders/orders.services"
 import { toJalaali } from 'jalaali-js';
 import { fetchByIdUser } from "@/apis/services/users/userById.services";
 
+type User = {
+    firstname: string;
+    lastname: string;
+};
+
 const Orders = () => {
 
     const [orders, setOrders] = useState<order[] | null>(null);
-    const [users, setUsers] = useState<Record<string, any>>({});
+    const [users, setUsers] = useState<Record<string, User>>({});
 
     useEffect(() => {
         const getOrders = async () => {
@@ -34,7 +39,7 @@ const Orders = () => {
                     fetchByIdUser(userId).then((userData) => ({ userId, userData }))
                 );
                 const usersData = await Promise.all(userPromises);
-                const usersMap: Record<string, any> = {};
+                const usersMap: Record<string, User> = {};
                 usersData.forEach(({ userId, userData }) => {
                     usersMap[userId] = userData.data.user;
                 });
@@ -46,8 +51,8 @@ const Orders = () => {
         getOrders();
     }, []);
     const formattedDate = (date: string): string => {
-        const gregorianDate: any = new Date(date);
-        const jalaaliDate: any = toJalaali(gregorianDate.getFullYear(), gregorianDate.getMonth() + 1, gregorianDate.getDate());
+        const gregorianDate = new Date(date);
+        const jalaaliDate = toJalaali(gregorianDate.getFullYear(), gregorianDate.getMonth() + 1, gregorianDate.getDate());
         return `${jalaaliDate.jy}/${jalaaliDate.jm}/${jalaaliDate.jd}`;
     };
     return (

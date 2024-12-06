@@ -19,7 +19,6 @@ export const fetchLoginAdmin = async ({
         throw new Error("نام کاربری یا رمز عبور اشتباه است.");
       }
     }
-    // سایر خطاها
     throw new Error("مشکلی در سیستم رخ داده است. لطفاً دوباره تلاش کنید.");
   }
 };
