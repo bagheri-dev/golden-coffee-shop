@@ -1,7 +1,7 @@
 interface IProduct {
   rating: {
-  rate: number;
-  count: number;
+    rate: number;
+    count: number;
   };
   _id: string;
   category: string;
@@ -16,12 +16,23 @@ interface IProduct {
   createdAt: string;
   updatedAt: string;
   slugname: string;
-  }
-  interface ICategory {
+}
+interface ICategory {
   _id: string;
   name: string;
   icon: string;
   createdAt: string;
   updatedAt: string;
   slugname: string;
-  }
+}
+
+interface IAddProduct {
+  name: string;
+  brand: string;
+  description: string;
+  quantity: string;
+  images: File[];
+  subcategory: string;
+  category: string;
+  price: string;
+}
