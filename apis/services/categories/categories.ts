@@ -5,7 +5,7 @@ import { IAllCategories, ICategories } from "@/types/categories/categories";
 
 export const fetchAddCategories = async (name: string): Promise< ICategories | undefined> => {
     try {
-      const response = await client.post(urls.categories.add, {
+      const response = await client.post(urls.categories.all, {
         name : name
       });
       return response.data

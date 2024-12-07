@@ -4,6 +4,7 @@ import { useEffect } from "react";
 import useProductStore from "@/store/store";
 import { fetchAllProducts } from "@/apis/services/products/products.services";
 import { fetchAllCategories } from "@/apis/services/categories/categories";
+import Image from "next/image";
 
 const Products = () => {
     const {
@@ -83,10 +84,12 @@ const Products = () => {
                             className="child:border-l-2 bg-white border-b dark:bg-gray-800 dark:border-gray-700"
                         >
                             <td className="px-2 py-1 flex justify-center">
-                                <img
+                                <Image
                                     src={`http://localhost:8000/images/products/images/${item.images[0]}`}
                                     alt={item.name}
                                     className="w-16 h-16 object-cover rounded-md"
+                                    width={250}
+                                    height={200}
                                 />
                             </td>
                             <td className="px-2 py-1 font-medium text-gray-900 whitespace-nowrap dark:text-white">

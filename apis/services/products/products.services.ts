@@ -20,8 +20,14 @@ export const fetchAllProducts: GetAllProductsType = async (page = 1, limit = 50)
     }
 
     return response.data;
-  } catch (error: any) {
-    console.error("Error fetching products:", error?.message || error);
-    throw new Error(error?.message || "Failed to fetch products");
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error:", error.message);
+      throw new Error(error.message || "خطا در دریافت محصولات");
+    } else {
+      console.error("error:", error);
+      throw new Error("خطایی رخ داده است");
+    }
   }
+  
 };
