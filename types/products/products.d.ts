@@ -47,3 +47,45 @@ interface IProductBox {
     count: number;
   };
 }
+
+interface IProductSingle {
+  status: string;
+  data: {
+    product: {
+      rating: {
+        rate: 0;
+        count: 0;
+      };
+      _id: string;
+      category: {
+        _id: string;
+        name: string;
+        icon: string;
+        createdAt: string;
+        updatedAt: string;
+        slugname: string;
+        __v: number;
+      };
+      subcategory: {
+        _id: string;
+        category: string;
+        name: string;
+        createdAt: string;
+        updatedAt: string;
+        slugname: string;
+        __v: number;
+      };
+      name: string;
+      price: number;
+      quantity: number;
+      brand: string;
+      description: string;
+      thumbnail: string;
+      images: Array<string>;
+      createdAt: string;
+      updatedAt: string;
+      slugname: string;
+      __v: number;
+    };
+  };
+}

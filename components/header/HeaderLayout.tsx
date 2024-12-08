@@ -142,7 +142,7 @@ const HeaderLayout: React.FC = () => {
                         <ul className="child:pr-2.5 space-y-6 text-zinc-600 dark:text-white ">
                             <li className="transition-all">
                                 <div className="flex items-center justify-between">
-                                    <Link href={"/"} className="flex items-center gap-x-2">
+                                    <Link href={"/shop"} className="flex items-center gap-x-2">
                                         <MdOutlineShoppingCart className="w-5 h-5" />
                                         فروشگاه
                                     </Link>
@@ -199,13 +199,13 @@ const HeaderLayout: React.FC = () => {
                             </li>
                         </ul>
                         <div className="flex flex-col items-start gap-y-6 text-orange-300 pt-8 px-2.5 mt-8 border-t border-t-gray-100 dark:border-t-white/10">
-                            <Link className="inline-flex items-center gap-x-2" href={"#"}>
+                            <Link className="inline-flex items-center gap-x-2" href={"/login"}>
                                 <RxExit className="w-5 h-5" />
                                 ورود | ثبت‌نام</Link>
                             <div className="cursor-pointer transition-all  inline-flex items-center gap-x-2" id="toggle-theme" onClick={toggleTheme}>
                                 {darkMode ? <span className="flex items-center gap-x-2"><FaMoon className="w-5 h-5" />تم تیره</span> : <span className="flex items-center gap-x-2"><MdWbSunny className="w-5 h-5" /> تم روشن</span>}
                             </div>
-                            <Link className=" inline-flex items-center gap-x-2" href={"#"}>
+                            <Link className=" inline-flex items-center gap-x-2" href={"/cart"}>
                                 <FiShoppingCart className="w-5 h-5" />
                                 سبد خرید</Link>
                         </div>

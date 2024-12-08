@@ -2,6 +2,7 @@
 import { fetchAllProducts } from "@/apis/services/products/products.services";
 import ProductBox from "@/components/products/ProductBox";
 import { useQuery } from "@tanstack/react-query";
+import Link from "next/link";
 import { IoIosArrowBack } from "react-icons/io";
 
 const NewProducts = () => {
@@ -29,7 +30,7 @@ const NewProducts = () => {
                 </div>
                 <div className="grid grid-cols-2 gap-3.5 md:grid-cols-3 md:gap-4 lg:grid-cols-4 lg:gap-5">
                     {data.data.products.map((items) => {
-                        return <ProductBox key={items._id} _id={items._id} name={items.name} price={items.price} images={items.images[0]} rating={{ rate: items.rating.rate, count: items.rating.count }} />
+                        return <Link key={items._id} href={`/shop/${items._id}`}><ProductBox key={items._id} _id={items._id} name={items.name} price={items.price} images={items.images[0]} rating={{ rate: items.rating.rate, count: items.rating.count }} /></Link>
                     })}
                 </div>
             </div>

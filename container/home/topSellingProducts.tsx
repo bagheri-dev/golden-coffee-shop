@@ -6,11 +6,12 @@ import { IoIosArrowBack } from "react-icons/io";
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
+import Link from "next/link";
 
 const TopSellingProducts = () => {
     const { isPending, error, data } = useQuery({
         queryKey: ['repoData'],
-        queryFn: () => fetchAllProducts(1, 8)
+        queryFn: () => fetchAllProducts(2, 8)
     })
 
     if (isPending) return 'Loading...'
@@ -43,7 +44,7 @@ const TopSellingProducts = () => {
                         className="mySwiper"
                     >
                         {data.data.products.map((items) => {
-                            return <SwiperSlide key={items._id}><ProductBox key={items._id} _id={items._id} name={items.name} price={items.price} images={items.images[0]} rating={{ rate: items.rating.rate, count: items.rating.count }} /></SwiperSlide>
+                            return <SwiperSlide key={items._id}><Link href={`/shop/${items._id}`}><ProductBox key={items._id} _id={items._id} name={items.name} price={items.price} images={items.images[0]} rating={{ rate: items.rating.rate, count: items.rating.count }} /></Link></SwiperSlide>
                         })}
                     </Swiper>
                 </div>

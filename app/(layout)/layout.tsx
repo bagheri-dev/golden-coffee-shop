@@ -1,10 +1,12 @@
+import Footer from "@/components/footer/footer";
 import HeaderLayout from "@/components/header/HeaderLayout";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
-    return (
-      <>
+  return (
+    <>
       <HeaderLayout />
-        {children}
-      </>
-    )
-  }
+      {children}
+      <Footer />
+    </>
+  )
+}

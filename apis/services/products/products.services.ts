@@ -35,57 +35,67 @@ export const fetchAllProducts: GetAllProductsType = async (
   }
 };
 
+//-----------------------------------------Product By Id
+
+export const fetchProductById = async (id: string): Promise<IProductSingle | undefined> => {
+  try {
+    const response = await client.get(urls.products.byId(id));
+    console.log(response.data);
+    return response.data;
+  } catch (error : unknown) {
+    console.error(error);
+  }
+};
 
 // ----------------------------------------Add Products
-export const fetchAddProduct = async(data : IAddProduct) => {
+export const fetchAddProduct = async (data: IAddProduct) => {
   try {
     const formData = new FormData();
-    formData.append('name', data.name);
-    formData.append('brand', data.brand);
-    formData.append('description', data.description);
-    formData.append('quantity', data.quantity.toString());
+    formData.append("name", data.name);
+    formData.append("brand", data.brand);
+    formData.append("description", data.description);
+    formData.append("quantity", data.quantity.toString());
     formData.append("images", data.images[0]);
-    formData.append('subcategory', data.subcategory);
-    formData.append('category', data.category);
-    formData.append('price', data.price.toString());
+    formData.append("subcategory", data.subcategory);
+    formData.append("category", data.category);
+    formData.append("price", data.price.toString());
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const response = await client.post(urls.products.all, formData , {
-      headers : {
-        Authorization : `Bearer ${token}`
-      }
-    })    
-  } catch (error) {
-    throw error
-  }
-}
-
-// ----------------------------------------Edit Products
-export const fetchEditProducts = async(id : string , data :  IAddProduct) => {
-  try {
-    const formData = new FormData();
-    formData.append('name', data.name);
-    formData.append('brand', data.brand);
-    formData.append('description', data.description);
-    formData.append('quantity', data.quantity.toString());
-    formData.append("images", data.images[0]);
-    formData.append('subcategory', data.subcategory);
-    formData.append('category', data.category);
-    formData.append('price', data.price.toString());
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    const response = await client.patch(urls.products.byId(id), formData)
-    return response.data
-  } catch (error) {
-    throw error
-  }
-}
-
-
-// ----------------------------------------Remove Products
-export const fetchRemoveProduct = async(id : string) => {
-  try {
-    const response = await client.delete(urls.products.byId(id))
-    console.log('Product deleted:', response.data);
+    const response = await client.post(urls.products.all, formData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
   } catch (error) {
     throw error;
   }
-}
+};
+
+// ----------------------------------------Edit Products
+export const fetchEditProducts = async (id: string, data: IAddProduct) => {
+  try {
+    const formData = new FormData();
+    formData.append("name", data.name);
+    formData.append("brand", data.brand);
+    formData.append("description", data.description);
+    formData.append("quantity", data.quantity.toString());
+    formData.append("images", data.images[0]);
+    formData.append("subcategory", data.subcategory);
+    formData.append("category", data.category);
+    formData.append("price", data.price.toString());
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    const response = await client.patch(urls.products.byId(id), formData);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+// ----------------------------------------Remove Products
+export const fetchRemoveProduct = async (id: string) => {
+  try {
+    const response = await client.delete(urls.products.byId(id));
+    console.log("Product deleted:", response.data);
+  } catch (error) {
+    throw error;
+  }
+};
