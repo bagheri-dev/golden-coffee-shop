@@ -36,3 +36,14 @@ interface IAddProduct {
   category: string;
   price: string;
 }
+
+interface IProductBox {
+  _id: string;
+  name: string;
+  price: number;
+  images: string;
+  rating: {
+    rate: number;
+    count: number;
+  };
+}
