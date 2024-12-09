@@ -61,19 +61,19 @@ const HeaderLayout: React.FC = () => {
                             </li>
                             {/*Has Sub*/}
                             <li className="relative group">
-                                <Link href="shop" className="group-hover:text-orange-300 transition-colors">فروشگاه</Link>
+                                <Link href="/shop" className="group-hover:text-orange-300 transition-colors">فروشگاه</Link>
                             </li>
                             <li>
-                                <Link href="dictionary">دیکشنری</Link>
+                                <Link href="/">دیکشنری</Link>
                             </li>
                             <li>
-                                <Link href="blogs">بلاگ</Link>
+                                <Link href="/">بلاگ</Link>
                             </li>
                             <li>
-                                <Link href="about">درباره ما</Link>
+                                <Link href="/">درباره ما</Link>
                             </li>
                             <li>
-                                <Link href="contact">تماس با ما</Link>
+                                <Link href="/">تماس با ما</Link>
                             </li>
                         </ul>
                     </nav>
@@ -152,22 +152,22 @@ const HeaderLayout: React.FC = () => {
                                 </div>
                                 {isShopSubmenuOpen && (
                                     <div className="submenu pl-6 mt-2 space-y-2">
-                                        <Link href="/">
+                                        <Link href="/category/674aa998f2cf95d67d5a9ceb">
                                             لوازم و تجهیزات
                                         </Link>
-                                        <Link href="/">
+                                        <Link href="/category/674aa97af2cf95d67d5a9ce7">
                                             پودر های ترکیبی
                                         </Link>
-                                        <Link href="/">
+                                        <Link href="/category/674aa95df2cf95d67d5a9ce3">
                                             قهوه فوری
                                         </Link>
-                                        <Link href="/">
+                                        <Link href="/category/674aa94df2cf95d67d5a9cdf">
                                             قهوه فرانسه
                                         </Link>
-                                        <Link href="/">
+                                        <Link href="/category/674aa92af2cf95d67d5a9cdb">
                                             قهوه ترک
                                         </Link>
-                                        <Link href="/">
+                                        <Link href="/category/674aa8e8f2cf95d67d5a9cd7">
                                             قهوه اسپرسو
                                         </Link>
                                     </div>

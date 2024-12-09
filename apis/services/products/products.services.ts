@@ -47,6 +47,75 @@ export const fetchProductById = async (id: string): Promise<IProductSingle | und
   }
 };
 
+//-----------------------------------------Product By Category
+type GetAllProductsCategoryType = (
+  page?: number,
+  limit?: number,
+  id?: string,
+) => Promise<IGlobalRes<{ products: IProduct[] }>>;
+export const fetchAllProductsCategory: GetAllProductsCategoryType = async (
+  page = 1,
+  limit = 50,
+  id = "",
+) => {
+  try {
+    const response = await client.get(urls.products.byCategory(id), {
+      params: {
+        page,
+        limit,
+      },
+    });
+
+    if (!response.data) {
+      throw new Error("Invalid response from server");
+    }
+
+    return response.data;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error:", error.message);
+      throw new Error(error.message || "خطا در دریافت محصولات");
+    } else {
+      throw new Error("خطایی رخ داده است");
+    }
+  }
+};
+//-----------------------------------------Product By Subcategory
+type GetAllProductsSubcategoryType = (
+  page?: number,
+  limit?: number,
+  id?: string,
+) => Promise<IGlobalRes<{ products: IProduct[] }>>;
+export const fetchProductsBySubcategory: GetAllProductsSubcategoryType = async (
+  page = 1,
+  limit = 50,
+  id = "",
+) => {
+  try {
+    const response = await client.get(urls.products.bySubcategory(id), {
+      params: {
+        page,
+        limit,
+      },
+    });
+
+    if (!response.data) {
+      throw new Error("Invalid response from server");
+    }
+
+    return response.data;
+  } catch (error: unknown) {
+    if (error instanceof Error) {
+      console.error("Error:", error.message);
+      throw new Error(error.message || "خطا در دریافت محصولات");
+    } else {
+      throw new Error("خطایی رخ داده است");
+    }
+  }
+};
+
+
+
 // ----------------------------------------Add Products
 export const fetchAddProduct = async (data: IAddProduct) => {
   try {

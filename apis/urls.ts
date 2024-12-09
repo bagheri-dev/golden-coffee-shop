@@ -7,6 +7,7 @@ export const urls = {
   products: {
     all: "/products",
     byId: (id: string) => `/products/${id}`,
+    byCategory : (id : string) => `/products?category=${id}`,
   },
   categories: {
     all: "/categories",
@@ -15,7 +16,7 @@ export const urls = {
   subcategories: {
     all: "/subcategories",
     byId: (id: string) => `/subcategories/${id}`,
-
+    byCategory : (id : string) => `/subcategories?category=${id}`
   },
   orders: {
     all: "/orders",
