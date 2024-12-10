@@ -31,7 +31,7 @@ interface IAddProduct {
   brand: string;
   description: string;
   quantity: string;
-  images: File[];
+  images: string[];
   subcategory: string;
   category: string;
   price: string;
@@ -87,5 +87,17 @@ interface IProductSingle {
       slugname: string;
       __v: number;
     };
+  };
+}
+
+interface EditState {
+  id?: string;
+  field?: string;
+}
+
+interface EditedProduct {
+  [key: string]: {
+    price?: number;
+    quantity?: number;
   };
 }

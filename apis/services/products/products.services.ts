@@ -80,42 +80,6 @@ export const fetchAllProductsCategory: GetAllProductsCategoryType = async (
     }
   }
 };
-//-----------------------------------------Product By Subcategory
-type GetAllProductsSubcategoryType = (
-  page?: number,
-  limit?: number,
-  id?: string,
-) => Promise<IGlobalRes<{ products: IProduct[] }>>;
-export const fetchProductsBySubcategory: GetAllProductsSubcategoryType = async (
-  page = 1,
-  limit = 50,
-  id = "",
-) => {
-  try {
-    const response = await client.get(urls.products.bySubcategory(id), {
-      params: {
-        page,
-        limit,
-      },
-    });
-
-    if (!response.data) {
-      throw new Error("Invalid response from server");
-    }
-
-    return response.data;
-  } catch (error: unknown) {
-    if (error instanceof Error) {
-      console.error("Error:", error.message);
-      throw new Error(error.message || "خطا در دریافت محصولات");
-    } else {
-      throw new Error("خطایی رخ داده است");
-    }
-  }
-};
-
-
-
 // ----------------------------------------Add Products
 export const fetchAddProduct = async (data: IAddProduct) => {
   try {
@@ -158,6 +122,28 @@ export const fetchEditProducts = async (id: string, data: IAddProduct) => {
     throw error;
   }
 };
+
+// Edit Stock
+export const fetchEditProductsStock = async (id: string, updatedData: { price?: string; quantity?: string }) => {
+  try {
+    const formData = new FormData();
+    
+    // تنها مقادیر price و quantity را به formData اضافه کنید اگر مقدار داشته باشند
+    if (updatedData.price !== undefined) {
+      formData.append("price", updatedData.price);
+    }
+    if (updatedData.quantity !== undefined) {
+      formData.append("quantity", updatedData.quantity);
+    }
+    
+    // ارسال درخواست PATCH به سرور برای ویرایش اطلاعات محصول
+    const response = await client.patch(urls.products.byId(id), formData);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
 
 // ----------------------------------------Remove Products
 export const fetchRemoveProduct = async (id: string) => {
