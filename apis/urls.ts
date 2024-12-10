@@ -1,6 +1,8 @@
 export const urls = {
   admin: "/auth/login",
   users : {
+    signup: "/auth/signup",
+    login: "/auth/login",
     all : "/users",
     byId : (id : string) => `/users/${id}`
   },

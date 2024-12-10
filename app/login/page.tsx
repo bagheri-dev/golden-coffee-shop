@@ -29,11 +29,15 @@ import { FaUserTie } from "react-icons/fa";
 import { FaRegEye } from "react-icons/fa";
 import { IoHomeOutline } from "react-icons/io5";
 import Link from "next/link";
+import { fetchUserLogin, fetchUserSingup } from "@/apis/services/auth/auth.user";
+import toast from "react-hot-toast";
+import { redirect } from "next/navigation";
+import useUserStore from "@/store/userStore";
 
 const formSchema = z.object({
     username: z.string().min(2, {
         message: "نام کاربری باید بیشتر از 2 کاراکتر باشد",
-    }).regex(/^[A-Za-z]+$/, { message: "نام کاربری باید با حروف انگلیسی باشد." }),
+    }),
     password: z.string().min(8, { message: "رمز عبور باید حداقل 8 کاراکتر باشد" }).regex(/^(?=.*[A-Za-z])(?=.*\d).+$/, { message: "رمز عبور باید شامل اعداد و حروف انگلیسی باشد" })
 });
 const formSignupSchema = z.object({
@@ -41,9 +45,9 @@ const formSignupSchema = z.object({
     lastname: z.string(),
     username: z.string().min(2, {
         message: "نام کاربری باید بیشتر از 2 کاراکتر باشد",
-    }).regex(/^[A-Za-z]+$/, { message: "نام کاربری باید با حروف انگلیسی باشد." }),
+    }),
     password: z.string().min(8, { message: "رمز عبور باید حداقل 8 کاراکتر باشد" }).regex(/^(?=.*[A-Za-z])(?=.*\d).+$/, { message: "رمز عبور باید شامل اعداد و حروف انگلیسی باشد" }),
-    phoneNumber: z.string().regex(/^(\+98|0)?9\d{9}$/ , {message : "شماره نامعتبر است"}),
+    phoneNumber: z.string().regex(/^(\+98|0)?9\d{9}$/, { message: "شماره نامعتبر است" }),
     address: z.string(),
 });
 
@@ -53,28 +57,66 @@ const formSignupSchema = z.object({
 const Login = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmittingSignup, setIsSubmittingSignup] = useState(false);
-    const [message, setMessage] = useState("");
     const [showPassword, setShowPassword] = useState("password")
     const [showPasswordSignup, setShowPasswordSignup] = useState("password");
+    const { login } = useUserStore();
 
     const form = useForm({
         resolver: zodResolver(formSchema),
+        defaultValues: {
+            username: "",
+            password: "",
+        },
     });
-    const formSignup = useForm({
+    const formSignup = useForm<IUserSignup>({
         resolver: zodResolver(formSignupSchema),
+        defaultValues: {
+            firstname: "",
+            lastname: "",
+            username: "",
+            password: "",
+            phoneNumber: "",
+            address: "",
+        },
     });
 
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const onSubmit = async (data: any) => {
         setIsSubmitting(true);
-        setMessage("");
-        console.log(data);
+        try {
+            const response = await fetchUserLogin(data);
+            toast.success("ورود موفقیت‌آمیز بود!");
+            login(response?.data?.user?.lastname || "نام کاربری ناشناس");
+            console.log("ثبت‌نام موفقیت‌آمیز:", response);
+            setTimeout(() => {
+                redirect("/")
+            }, 1000);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            console.error("خطا در ورود:", error.message);
+
+        } finally {
+            setIsSubmittingSignup(false);
+        }
         setIsSubmitting(false)
     };
-    const onSubmitSignup = async (data: any) => {
+    const onSubmitSignup = async (data: IUserSignup) => {
         setIsSubmittingSignup(true);
-        // setMessage("");
-        console.log(data);
-        setIsSubmittingSignup(false)
+        try {
+            const response = await fetchUserSingup(data);
+            toast.success("ثبت‌نام موفقیت‌آمیز بود!");
+            login(response?.data?.user?.lastname || "نام کاربری ناشناس");
+            console.log("ثبت‌نام موفقیت‌آمیز:", response);
+            setTimeout(() => {
+                redirect("/")
+            }, 1000);
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        } catch (error: any) {
+            console.error("خطا در ثبت‌نام:", error.message);
+
+        } finally {
+            setIsSubmittingSignup(false);
+        }
     };
     return (
         <div className="">
@@ -130,7 +172,6 @@ const Login = () => {
                                 <Button className={`${isSubmitting ? "bg-brown-300" : "bg-brown-900 text-lgh hover:bg-brown-600"}`} type="submit" disabled={isSubmitting}>
                                     {isSubmitting ? "در حال ورود..." : "ورود"}
                                 </Button>
-                                {message && <p>{message}</p>}
                                 <div className="flex items-center justify-between">
                                     <button className="bg-brown-900 py-1 px-2 rounded-lg text-gray-200 text-sm font-semibold" title="ادمین عزیز در صورت وجود هرگونه مشکل میتونی با ما تماس بگیری برای تماس کافی کلیک کنی">
                                         <a className="flex items-center gap-x-1" href="mailto:bagheri.develop@gmail.com">
@@ -260,8 +301,6 @@ const Login = () => {
                                     disabled={isSubmittingSignup}>
                                     {isSubmittingSignup ? "در حال ثبت نام..." : "ثبت نام"}
                                 </Button>
-                                {message && <p>{message}</p>}
-
                             </form>
                         </Form>
                     </TabsContent>
