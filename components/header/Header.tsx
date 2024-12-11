@@ -212,8 +212,8 @@ const Header: React.FC = () => {
                         <div className="flex flex-col items-start gap-y-6 text-orange-300 pt-8 px-2.5 mt-8 border-t border-t-gray-100 dark:border-t-white/10">
                             {!user ? (
                                 <Link href="/login" className="flex items-center gap-x-2.5 tracking-tightest">
-                                    <RxExit className="w-8 h-8" />
-                                    <span className="hidden xl:inline-block">ورود | ثبت‌نام</span>
+                                    <RxExit className="size-5" />
+                                    <span className="xl:inline-block">ورود | ثبت‌نام</span>
                                 </Link>
                             ) : (
                                 <div className="flex items-center gap-x-2.5 tracking-tightest">

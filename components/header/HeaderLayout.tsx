@@ -33,7 +33,7 @@ const HeaderLayout: React.FC = () => {
     const toggleMenu = () => {
         setIsMenuOpen((prev) => !prev);
     };
-    const { user} = useUserStore();
+    const { user } = useUserStore();
 
 
     return (
@@ -207,16 +207,16 @@ const HeaderLayout: React.FC = () => {
                             </li>
                         </ul>
                         <div className="flex flex-col items-start gap-y-6 text-orange-300 pt-8 px-2.5 mt-8 border-t border-t-gray-100 dark:border-t-white/10">
-                        {!user ? (
-                            <Link href="/login" className="flex items-center gap-x-2.5 tracking-tightest">
-                                <RxExit className="w-8 h-8" />
-                                <span className="hidden xl:inline-block">ورود | ثبت‌نام</span>
-                            </Link>
-                        ) : (
-                            <div className="flex items-center gap-x-2.5 tracking-tightest">
-                                <span>سلام، {user}!</span>
-                            </div>
-                        )}
+                            {!user ? (
+                                <Link href="/login" className="flex items-center gap-x-2.5 tracking-tightest">
+                                    <RxExit className="size-5" />
+                                    <span className="xl:inline-block">ورود | ثبت‌نام</span>
+                                </Link>
+                            ) : (
+                                <div className="flex items-center gap-x-2.5 tracking-tightest">
+                                    <span>سلام، {user}!</span>
+                                </div>
+                            )}
                             <div className="cursor-pointer transition-all  inline-flex items-center gap-x-2" id="toggle-theme" onClick={toggleTheme}>
                                 {darkMode ? <span className="flex items-center gap-x-2"><FaMoon className="w-5 h-5" />تم تیره</span> : <span className="flex items-center gap-x-2"><MdWbSunny className="w-5 h-5" /> تم روشن</span>}
                             </div>
