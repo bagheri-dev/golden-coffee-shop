@@ -5,8 +5,7 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
-
-
+import Cookies from "js-cookie";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -33,6 +32,7 @@ import { fetchUserLogin, fetchUserSingup } from "@/apis/services/auth/auth.user"
 import toast from "react-hot-toast";
 import { redirect } from "next/navigation";
 import useUserStore from "@/store/userStore";
+import { IAdminLogin } from "@/types/auth/adminLogin";
 
 const formSchema = z.object({
     username: z.string().min(2, {
@@ -80,21 +80,25 @@ const Login = () => {
         },
     });
 
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const onSubmit = async (data: any) => {
+    const onSubmit = async (data: IAdminLogin) => {
         setIsSubmitting(true);
         try {
             const response = await fetchUserLogin(data);
+            Cookies.set("access_token", response?.token.accessToken ?? "", { expires: 1, secure: true });
+            Cookies.set("refresh_token", response?.token.refreshToken ?? "", { expires: 7, secure: true });
+            Cookies.set("role", response?.data.user.role ?? "");
             toast.success("ورود موفقیت‌آمیز بود!");
             login(response?.data?.user?.lastname || "نام کاربری ناشناس");
-            console.log("ثبت‌نام موفقیت‌آمیز:", response);
             setTimeout(() => {
                 redirect("/")
             }, 1000);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
-            console.error("خطا در ورود:", error.message);
 
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.error("خطا در ورود:", error.message);
+            } else {
+                console.error("خطای ناشناخته");
+            }
         } finally {
             setIsSubmittingSignup(false);
         }
@@ -104,16 +108,21 @@ const Login = () => {
         setIsSubmittingSignup(true);
         try {
             const response = await fetchUserSingup(data);
+            Cookies.set("access_token", response?.token.accessToken ?? "", { expires: 1, secure: true });
+            Cookies.set("refresh_token", response?.token.refreshToken ?? "", { expires: 7, secure: true });
+            Cookies.set("role", response?.data.user.role ?? "");
             toast.success("ثبت‌نام موفقیت‌آمیز بود!");
             login(response?.data?.user?.lastname || "نام کاربری ناشناس");
-            console.log("ثبت‌نام موفقیت‌آمیز:", response);
             setTimeout(() => {
                 redirect("/")
             }, 1000);
-            // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        } catch (error: any) {
-            console.error("خطا در ثبت‌نام:", error.message);
 
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.error("خطا در ورود:", error.message);
+            } else {
+                console.error("خطای ناشناخته");
+            }
         } finally {
             setIsSubmittingSignup(false);
         }

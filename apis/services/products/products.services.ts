@@ -1,7 +1,8 @@
 import { client } from "@/apis/client";
 import { urls } from "@/apis/urls";
+import Cookies from "js-cookie";
 
-const token = localStorage.getItem("accessToken");
+const token = Cookies.get("access_token");
 
 type GetAllProductsType = (
   page?: number,

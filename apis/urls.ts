@@ -1,4 +1,5 @@
 export const urls = {
+  token : "/auth/token",
   admin: "/auth/login",
   users : {
     signup: "/auth/signup",
