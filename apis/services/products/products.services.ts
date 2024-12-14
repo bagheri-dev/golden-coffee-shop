@@ -129,7 +129,6 @@ export const fetchEditProductsStock = async (id: string, updatedData: { price?: 
   try {
     const formData = new FormData();
     
-    // تنها مقادیر price و quantity را به formData اضافه کنید اگر مقدار داشته باشند
     if (updatedData.price !== undefined) {
       formData.append("price", updatedData.price);
     }
@@ -137,7 +136,6 @@ export const fetchEditProductsStock = async (id: string, updatedData: { price?: 
       formData.append("quantity", updatedData.quantity);
     }
     
-    // ارسال درخواست PATCH به سرور برای ویرایش اطلاعات محصول
     const response = await client.patch(urls.products.byId(id), formData);
     return response.data;
   } catch (error) {

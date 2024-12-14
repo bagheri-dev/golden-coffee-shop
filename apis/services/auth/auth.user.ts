@@ -24,7 +24,7 @@ export const fetchUserSingup = async ({
   } catch (error) {
     if (error instanceof AxiosError) {
       if (error.response && error.response.status === 401) {
-        throw new Error("نام کاربری یا رمز عبور اشتباه است.");
+        throw new Error("مطمئن شوید فیلد ها درست پر شده‌اند");
       }
     }
     throw new Error("مشکلی در سیستم رخ داده است. لطفاً دوباره تلاش کنید.");
