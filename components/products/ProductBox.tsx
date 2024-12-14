@@ -1,12 +1,13 @@
+import Image from "next/image";
 import { FaRegStar } from "react-icons/fa";
 import { FiShoppingCart } from "react-icons/fi";
 import { HiArrowsRightLeft } from "react-icons/hi2";
 
-const ProductBox = ({ _id, name, price, images, rating }: IProduct) => {
+const ProductBox = ({ _id, name, price, images, rating }: IProductBox) => {
     return (
         <div key={_id} className="p-2 md:p-5 bg-white dark:bg-zinc-700 shadow-normal rounded-2xl">
             <div className="mb-2 md:mb-5">
-                <img src={images[0]} className="w-32 mx-auto md:w-auto" alt="" />
+                <Image src={`http://localhost:8000/images/products/images/${images}`} className="mx-auto md:w-auto" alt={name} width={260} height={260} />
             </div>
             <h5 className="font-DanaMedium h-10 md:h-14 text-sm md:text-xl text-zinc-700 dark:text-white line-clamp-2">
                 {name}
@@ -26,7 +27,7 @@ const ProductBox = ({ _id, name, price, images, rating }: IProduct) => {
                         </span>
                     </div>
                     <div className="flex">
-                        <FaRegStar />
+                        <FaRegStar  className="text-yellow-500"/>
                         {rating.rate}
                     </div>
                 </div>

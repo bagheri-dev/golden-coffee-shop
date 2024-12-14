@@ -1,9 +1,10 @@
 "use client";
 
+import Cookies from "js-cookie";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
-import { useRef, useState } from "react";
+import { useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import {
@@ -25,6 +26,7 @@ import { fetchLoginAdmin } from "@/apis/services/auth/auth.admin";
 import { IAdminLogin } from "@/types/auth/adminLogin";
 import { redirect } from "next/navigation";
 import toast from 'react-hot-toast';
+import useUserStore from "@/store/userStore";
 
 const formSchema = z.object({
     username: z.string().min(2, {
@@ -36,6 +38,7 @@ const formSchema = z.object({
 const ProfileForm = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [showPassword, setShowPassword] = useState("password")
+    const { login } = useUserStore();
 
     const form = useForm<IAdminLogin>({
         resolver: zodResolver(formSchema),
@@ -50,9 +53,11 @@ const ProfileForm = () => {
             });
 
             if (response && response.status === "success") {
-                localStorage.setItem("accessToken", response.token.accessToken);
-                localStorage.setItem("refreshToken", response.token.refreshToken);
+                Cookies.set("access_token", response?.token.accessToken ?? "", { expires: 1, secure: true });
+                Cookies.set("refresh_token", response?.token.refreshToken ?? "", { expires: 7, secure: true });
+                Cookies.set("role", response?.data.user.role ?? "");
                 toast.success("ورود موفقیت‌آمیز بود! 🎉");
+                login(response?.data?.user?.lastname || "نام کاربری ناشناس");
 
                 setTimeout(() => {
                     if (response.data.user.role === "ADMIN") {
@@ -62,10 +67,12 @@ const ProfileForm = () => {
                     }
                 }, 2000);
             }
-        } catch (error: any) {
-            toast.error(error.message)
-            console.log(error);
-
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                console.error("خطا در ورود:", error.message);
+            } else {
+                console.error("خطای ناشناخته");
+            }
         } finally {
             setIsSubmitting(false);
         }

@@ -1,7 +1,9 @@
 import { client } from "../../client";
 import { urls } from "../../urls";
+import Cookies from "js-cookie";
 
-const token = localStorage.getItem("accessToken");
+
+const token = Cookies.get("access_token");
 
 export const fetchAllUsers = async () => {
   try {

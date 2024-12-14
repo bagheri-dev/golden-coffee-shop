@@ -16,6 +16,7 @@ import { VscCallOutgoing } from "react-icons/vsc";
 import { FiShoppingCart } from "react-icons/fi";
 import AppLogo from "../svgs/app-logo";
 import AppLogoType from "../svgs/app-logo-type";
+import useUserStore from "@/store/userStore";
 
 
 const Header: React.FC = () => {
@@ -52,7 +53,7 @@ const Header: React.FC = () => {
     const toggleMenu = () => {
         setIsMenuOpen((prev) => !prev);
     };
-
+    const { user } = useUserStore();
 
     return (
         <>
@@ -79,16 +80,16 @@ const Header: React.FC = () => {
                                 <Link href="shop" className="group-hover:text-orange-300 transition-colors">فروشگاه</Link>
                             </li>
                             <li>
-                                <Link href="dictionary">دیکشنری</Link>
+                                <Link href="/">دیکشنری</Link>
                             </li>
                             <li>
-                                <Link href="blogs">بلاگ</Link>
+                                <Link href="/">بلاگ</Link>
                             </li>
                             <li>
-                                <Link href="about">درباره ما</Link>
+                                <Link href="/">درباره ما</Link>
                             </li>
                             <li>
-                                <Link href="contact">تماس با ما</Link>
+                                <Link href="/">تماس با ما</Link>
                             </li>
                         </ul>
                     </nav>
@@ -111,10 +112,16 @@ const Header: React.FC = () => {
                         {/*Divide Border*/}
                         <span className="block w-px h-14 bg-white/20"></span>
                         {/*Login Link*/}
-                        <Link href="/login" className="flex items-center gap-x-2.5 tracking-tightest">
-                            <RxExit className="w-8 h-8" />
-                            <span className="hidden xl:inline-block">ورود | ثبت‌نام</span>
-                        </Link>
+                        {!user ? (
+                            <Link href="/login" className="flex items-center gap-x-2.5 tracking-tightest">
+                                <RxExit className="w-8 h-8" />
+                                <span className="hidden xl:inline-block">ورود | ثبت‌نام</span>
+                            </Link>
+                        ) : (
+                            <div className="flex items-center gap-x-2.5 tracking-tightest">
+                                <span>سلام، {user}!</span>
+                            </div>
+                        )}
                     </div>
                 </div>
             </header>
@@ -146,7 +153,7 @@ const Header: React.FC = () => {
                         <ul className="child:pr-2.5 space-y-6 text-zinc-600 dark:text-white ">
                             <li className="transition-all">
                                 <div className="flex items-center justify-between">
-                                    <Link href={"/"} className="flex items-center gap-x-2">
+                                    <Link href={"/shop"} className="flex items-center gap-x-2">
                                         <MdOutlineShoppingCart className="w-5 h-5" />
                                         فروشگاه
                                     </Link>
@@ -156,22 +163,22 @@ const Header: React.FC = () => {
                                 </div>
                                 {isShopSubmenuOpen && (
                                     <div className="submenu pl-6 mt-2 space-y-2">
-                                        <Link href="/">
+                                        <Link href="/category/674aa998f2cf95d67d5a9ceb">
                                             لوازم و تجهیزات
                                         </Link>
-                                        <Link href="/">
+                                        <Link href="/category/674aa97af2cf95d67d5a9ce7">
                                             پودر های ترکیبی
                                         </Link>
-                                        <Link href="/">
+                                        <Link href="/category/674aa95df2cf95d67d5a9ce3">
                                             قهوه فوری
                                         </Link>
-                                        <Link href="/">
+                                        <Link href="/category/674aa94df2cf95d67d5a9cdf">
                                             قهوه فرانسه
                                         </Link>
-                                        <Link href="/">
+                                        <Link href="/category/674aa92af2cf95d67d5a9cdb">
                                             قهوه ترک
                                         </Link>
-                                        <Link href="/">
+                                        <Link href="/category/674aa8e8f2cf95d67d5a9cd7">
                                             قهوه اسپرسو
                                         </Link>
                                     </div>
@@ -203,9 +210,16 @@ const Header: React.FC = () => {
                             </li>
                         </ul>
                         <div className="flex flex-col items-start gap-y-6 text-orange-300 pt-8 px-2.5 mt-8 border-t border-t-gray-100 dark:border-t-white/10">
-                            <Link className="inline-flex items-center gap-x-2" href={"#"}>
-                                <RxExit className="w-5 h-5" />
-                                ورود | ثبت‌نام</Link>
+                            {!user ? (
+                                <Link href="/login" className="flex items-center gap-x-2.5 tracking-tightest">
+                                    <RxExit className="size-5" />
+                                    <span className="xl:inline-block">ورود | ثبت‌نام</span>
+                                </Link>
+                            ) : (
+                                <div className="flex items-center gap-x-2.5 tracking-tightest">
+                                    <span>سلام، {user}!</span>
+                                </div>
+                            )}
                             <div className="cursor-pointer transition-all  inline-flex items-center gap-x-2" id="toggle-theme" onClick={toggleTheme}>
                                 {darkMode ? <span className="flex items-center gap-x-2"><FaMoon className="w-5 h-5" />تم تیره</span> : <span className="flex items-center gap-x-2"><MdWbSunny className="w-5 h-5" /> تم روشن</span>}
                             </div>

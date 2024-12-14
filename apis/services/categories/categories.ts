@@ -1,6 +1,6 @@
 import { client } from "@/apis/client";
 import { urls } from "@/apis/urls";
-import { IAllCategories, ICategories } from "@/types/categories/categories";
+import { IAllCategories, ICategories, ISubcategoryByCategory } from "@/types/categories/categories";
 
 
 export const fetchAddCategories = async (name: string): Promise< ICategories | undefined> => {
@@ -33,5 +33,14 @@ export const fetchAddCategories = async (name: string): Promise< ICategories | u
         return response.data.data.category.name
     } catch (error) {
         console.log(error);
+    }
+  }
+
+  export const fetchSubcategoryByCategory = async(id : string) : Promise<ISubcategoryByCategory | undefined> => {
+    try {
+      const response = await client.get(urls.subcategories.byCategory(id))
+      return response.data
+    } catch (error) {
+      console.log(error);
     }
   }
