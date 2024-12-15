@@ -6,6 +6,7 @@ interface CategoryNames {
 }
 
 interface ProductStore {
+  updateProduct(updatedProduct: { _id: string; name: string; category: string; subcategory: string; brand: string; quantity: number; price: number; description: string; images: string[]; }): unknown;
   products: IProduct[];
   categoryNames: CategoryNames;
   totalPages: number;
@@ -45,6 +46,12 @@ const useProductStore = create<ProductStore>((set) => ({
       set({ isLoading: false });
     }
   },
+  updateProduct: (updatedProduct: IProduct) =>
+    set((state) => ({
+      products: state.products.map((product) =>
+        product._id === updatedProduct._id ? updatedProduct : product
+      ),
+    })),
 }));
 
 export default useProductStore;
