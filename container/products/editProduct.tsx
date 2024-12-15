@@ -31,31 +31,10 @@ import {
 import { fetchEditProducts, fetchProductById } from "@/apis/services/products/products.services";
 import toast from "react-hot-toast";
 import { useQuery } from "@tanstack/react-query";
-import { useEffect } from "react";
-
-const optionsCategory = [
-    { value: "675c7cdec82fb2db41170299", label: "قهوه اسپرسو" },
-    { value: "675c7d1cc82fb2db411702b1", label: "قهوه ترک" },
-    { value: "675c7d26c82fb2db411702b5", label: "قهوه فرانسه" },
-    { value: "675c7d10c82fb2db411702ad", label: "قهوه فوری" },
-    { value: "675c7d04c82fb2db411702a5", label: "پودر های ترکیبی" },
-    { value: "675c7cf4c82fb2db4117029f", label: "لوازم و تجهیزات" }
-];
-const optionsSubcategory = [
-    { value: "675c7dc0c82fb2db411702c6", label: "پودر اسپرسو" },
-    { value: "675c7db6c82fb2db411702c2", label: "دانه اسپرسو" },
-    { value: "675c7ef0c82fb2db411702ea", label: "کاپوچینو" },
-    { value: "675c7ee1c82fb2db411702e6", label: "کافی میکس" },
-    { value: "675c8127c82fb2db41170306", label: "چای لاته کاراملی" },
-    { value: "675c7eacc82fb2db411702de", label: "شکلات داغ" },
-    { value: "675c7e9bc82fb2db411702da", label: "چای ماسالا" },
-    { value: "675c7e44c82fb2db411702d2", label: "پوشاک" },
-    { value: "675c7e4cc82fb2db411702d6", label: "لوازم" },
-    { value: "675c7f5fc82fb2db411702f6", label: "قهوه فرانسه گرمی" },
-    { value: "675c7f68c82fb2db411702fa", label: "قهوه فرانسه ساشه‌ای" },
-    { value: "675c7f22c82fb2db411702ee", label: "قهوه ترک گرمی" },
-    { value: "675c7f33c82fb2db411702f2", label: "قهوه ترک ساشه‌ای" }
-];
+import { useEffect, useState } from "react";
+import useProductStore from "@/store/store";
+import { getAllCategories, getAllSubcategories } from "@/apis/services/categories/categories";
+import { ISubcategory } from "@/types/categories/categories";
 
 
 const formSchema = z.object({
@@ -76,6 +55,17 @@ const formSchema = z.object({
 });
 
 export function EditProduct({ productId }: { productId: string }) {
+    const [filteredSubcategories, setFilteredSubcategories] = useState<ISubcategory[]>([]);
+
+    const { data: category } = useQuery({
+        queryKey: ['repoDataCat'],
+        queryFn: () => getAllCategories()
+    })
+    const { data: subcategory } = useQuery({
+        queryKey: ['repoDataSub'],
+        queryFn: () => getAllSubcategories()
+    })
+
     const form = useForm<IAddProduct>({
         resolver: zodResolver(formSchema),
     });
@@ -98,8 +88,13 @@ export function EditProduct({ productId }: { productId: string }) {
                 description: data.data.product.description,
                 images: data.data.product.images.length > 0 ? [data.data.product.images[0]] : []
             });
+            const selectedCategoryId = data.data.product.category._id;
+            const filtered = subcategory?.data.subcategories.filter(
+                (sub) => sub.category === selectedCategoryId
+            );
+            setFilteredSubcategories(filtered || []);
         }
-    }, [data, form]);
+    }, [data, form, subcategory]);
 
     if (isPending) return 'در حال بارگذاری...'
 
@@ -109,6 +104,20 @@ export function EditProduct({ productId }: { productId: string }) {
         try {
             await fetchEditProducts(productId, data);
             toast.success("محصول با موفقیت ویرایش شد");
+            const updatedProduct = {
+                _id: productId,
+                name: data.name,
+                category: data.category,
+                subcategory: data.subcategory,
+                brand: data.brand,
+                quantity: parseInt(data.quantity),
+                price: parseFloat(data.price),
+                description: data.description,
+                images: data.images
+            };
+
+            useProductStore.getState().updateProduct(updatedProduct);
+
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             toast.error("متاسفانه در ویرایش محصول مشکلی پیش آمده است")
@@ -153,14 +162,24 @@ export function EditProduct({ productId }: { productId: string }) {
                                             دسته بندی محصول
                                         </FormLabel>
                                         <FormControl>
-                                            <Select onValueChange={(value) => field.onChange(value)} defaultValue={field.value}>
+                                            <Select
+                                                onValueChange={(value) => {
+                                                    field.onChange(value);
+                                                    const selectedCategoryId = value;
+                                                    const filtered = subcategory?.data.subcategories.filter(
+                                                        (sub) => sub.category === selectedCategoryId
+                                                    );
+                                                    setFilteredSubcategories(filtered || []);
+                                                }}
+                                                defaultValue={field.value}
+                                            >
                                                 <SelectTrigger className="w-[180px]">
                                                     <SelectValue placeholder="گروه" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    {optionsCategory.map((option) => (
-                                                        <SelectItem key={option.value} value={option.value}>
-                                                            {option.label}
+                                                    {category?.data.categories.map((option) => (
+                                                        <SelectItem key={option._id} value={option._id}>
+                                                            {option.name}
                                                         </SelectItem>
                                                     ))}
                                                 </SelectContent>
@@ -179,18 +198,20 @@ export function EditProduct({ productId }: { productId: string }) {
                                             زیر دسته بندی محصول
                                         </FormLabel>
                                         <FormControl>
-                                            <Select onValueChange={(value) => field.onChange(value)} defaultValue={field.value}>
+                                            <Select
+                                                onValueChange={(value) => field.onChange(value)}
+                                                defaultValue={field.value}
+                                            >
                                                 <SelectTrigger className="w-[180px]">
                                                     <SelectValue placeholder="زیرگروه" />
                                                 </SelectTrigger>
-                                                <SelectContent className="">
-                                                    {optionsSubcategory.map((option) => (
-                                                        <SelectItem key={option.value} value={option.value}>
-                                                            {option.label}
+                                                <SelectContent>
+                                                    {filteredSubcategories.map((option) => (
+                                                        <SelectItem key={option._id} value={option._id}>
+                                                            {option.name}
                                                         </SelectItem>
                                                     ))}
                                                 </SelectContent>
-
                                             </Select>
                                         </FormControl>
                                         <FormMessage />

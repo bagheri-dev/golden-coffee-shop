@@ -32,6 +32,10 @@ import {
 } from "@/components/ui/form";
 import { fetchAddProduct } from "@/apis/services/products/products.services";
 import toast from "react-hot-toast";
+import { getAllCategories, getAllSubcategories } from "@/apis/services/categories/categories";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
+import { ISubcategory } from "@/types/categories/categories";
 
 const formSchema = z.object({
     name: z.string().min(2, {
@@ -51,14 +55,32 @@ const formSchema = z.object({
 });
 
 export function AddProduct() {
+    const [filteredSubcategories, setFilteredSubcategories] = useState<ISubcategory[]>([]);
+
+    const { data: category } = useQuery({
+        queryKey: ['repoDataCat'],
+        queryFn: () => getAllCategories()
+    })
+    const { data: subcategory } = useQuery({
+        queryKey: ['repoDataSub'],
+        queryFn: () => getAllSubcategories()
+    })
+
+    const handleCategoryChange = (categoryId: string) => {
+        if (subcategory?.data?.subcategories) {
+            const filtered = subcategory.data.subcategories.filter(sub => sub.category === categoryId);
+            setFilteredSubcategories(filtered);
+        }
+    };
+
     const form = useForm<IAddProduct>({
         resolver: zodResolver(formSchema),
     });
 
-    const onSubmit = async (data : IAddProduct) => {
+    const onSubmit = async (data: IAddProduct) => {
         try {
             fetchAddProduct(data)
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
         } catch (error) {
             toast.error("متاسفانه محصول اضافه نشد.")
         }
@@ -100,21 +122,23 @@ export function AddProduct() {
                                 name="category"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="flex items-center gap-x-2">
-                                            دسته بندی محصول
-                                        </FormLabel>
+                                        <FormLabel>دسته بندی محصول</FormLabel>
                                         <FormControl>
-                                            <Select onValueChange={(value) => field.onChange(value)} defaultValue={field.value}>
+                                            <Select
+                                                onValueChange={(value) => {
+                                                    field.onChange(value);
+                                                    handleCategoryChange(value); // فیلتر کردن زیر دسته‌بندی‌ها
+                                                }}
+                                            >
                                                 <SelectTrigger className="w-[180px]">
                                                     <SelectValue placeholder="گروه" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="675c7cdec82fb2db41170299">قهوه اسپرسو</SelectItem>
-                                                    <SelectItem value="675c7d1cc82fb2db411702b1">قهوه ترک</SelectItem>
-                                                    <SelectItem value="675c7d26c82fb2db411702b5">قهوه فرانسه</SelectItem>
-                                                    <SelectItem value="675c7d10c82fb2db411702ad">قهوه فوری</SelectItem>
-                                                    <SelectItem value="675c7d04c82fb2db411702a5">پودر های ترکیبی</SelectItem>
-                                                    <SelectItem value="675c7cf4c82fb2db4117029f">لوازم و تجهیزات</SelectItem>
+                                                    {category?.data.categories.map((category) => (
+                                                        <SelectItem key={category._id} value={category._id}>
+                                                            {category.name}
+                                                        </SelectItem>
+                                                    ))}
                                                 </SelectContent>
                                             </Select>
                                         </FormControl>
@@ -127,28 +151,18 @@ export function AddProduct() {
                                 name="subcategory"
                                 render={({ field }) => (
                                     <FormItem>
-                                        <FormLabel className="flex items-center gap-x-2">
-                                            زیر دسته بندی محصول
-                                        </FormLabel>
+                                        <FormLabel>زیر دسته بندی محصول</FormLabel>
                                         <FormControl>
                                             <Select onValueChange={(value) => field.onChange(value)} defaultValue={field.value}>
                                                 <SelectTrigger className="w-[180px]">
                                                     <SelectValue placeholder="زیرگروه" />
                                                 </SelectTrigger>
                                                 <SelectContent>
-                                                    <SelectItem value="675c7dc0c82fb2db411702c6">پودر اسپرسو</SelectItem>
-                                                    <SelectItem value="675c7db6c82fb2db411702c2">دانه اسپرسو</SelectItem>
-                                                    <SelectItem value="675c7ef0c82fb2db411702ea">کاپوچینو</SelectItem>
-                                                    <SelectItem value="675c7ee1c82fb2db411702e6">کافی میکس</SelectItem>
-                                                    <SelectItem value="675c8127c82fb2db41170306">چای لاته کاراملی</SelectItem>
-                                                    <SelectItem value="675c7eacc82fb2db411702de">شکلات داغ</SelectItem>
-                                                    <SelectItem value="675c7e9bc82fb2db411702da">چای ماسالا</SelectItem>
-                                                    <SelectItem value="675c7e44c82fb2db411702d2">پوشاک</SelectItem>
-                                                    <SelectItem value="675c7e4cc82fb2db411702d6">لوازم</SelectItem>
-                                                    <SelectItem value="675c7f5fc82fb2db411702f6">قهوه فرانسه گرمی</SelectItem>
-                                                    <SelectItem value="675c7f68c82fb2db411702fa">قهوه فرانسه ساشه‌ای</SelectItem>
-                                                    <SelectItem value="675c7f22c82fb2db411702ee">قهوه ترک گرمی</SelectItem>
-                                                    <SelectItem value="675c7f33c82fb2db411702f2">قهوه ترک ساشه‌ای</SelectItem>
+                                                    {filteredSubcategories?.map((subcategory) => (
+                                                        <SelectItem key={subcategory._id} value={subcategory._id}>
+                                                            {subcategory.name}
+                                                        </SelectItem>
+                                                    ))}
                                                 </SelectContent>
                                             </Select>
                                         </FormControl>

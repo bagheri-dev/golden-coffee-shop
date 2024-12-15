@@ -1,6 +1,26 @@
 import { client } from "@/apis/client";
 import { urls } from "@/apis/urls";
-import { IAllCategories, ICategories, ISubcategoryByCategory } from "@/types/categories/categories";
+import { IAllCategories, ICategories, ISubcategoryAll, ISubcategoryByCategory } from "@/types/categories/categories";
+
+export const getAllCategories = async (): Promise<IAllCategories> => {
+  try {
+    const response = await client.get(urls.categories.all);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return Promise.reject("Failed to fetch categories");
+  }
+}
+
+export const getAllSubcategories = async () : Promise<ISubcategoryAll> => {
+  try {
+    const response = await client.get(urls.subcategories.all);
+    return response.data;
+  } catch (error) {
+    console.error("Error fetching categories:", error);
+    return Promise.reject("Failed to fetch categories");
+  }
+}
 
 
 export const fetchAddCategories = async (name: string): Promise< ICategories | undefined> => {
