@@ -96,10 +96,10 @@ const Products = () => {
         );
     }
 
-    if (products.length === 0) {
+    if (!products) {
         return (
             <div className="flex items-center justify-center w-full h-screen">
-                <p>محصولی یافت نشد</p>
+                <p>خطا در دریافت محصول</p>
             </div>
         );
     }
@@ -139,6 +139,7 @@ const Products = () => {
                         >
                             <td className="px-2 py-1 flex justify-center">
                                 <Image
+                                    key={item.images[0]}
                                     src={`http://localhost:8000/images/products/images/${item.images[0]}`}
                                     alt={item.name}
                                     className="w-16 h-16 object-cover rounded-md"
