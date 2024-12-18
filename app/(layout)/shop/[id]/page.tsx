@@ -106,7 +106,7 @@ const ProductPage = () => {
                     <h1 className="text-2xl font-DanaDemiBold">{product?.name}</h1>
                     <div className="flex items-center justify-between mt-8">
                         <p className="flex items-center gap-x-1">
-                            <CiBoxes className="text-4xl" /> موجودی: {product?.quantity}
+                            <CiBoxes className="text-4xl" /> موجودی: {product?.quantity === 0 ?  `محصول موجود نیست` : `محصول به تعداد ${product?.quantity} موجود میباشد`}
                         </p>
                         <p className="flex items-center text-lg">
                             <FaRegStar className="text-yellow-400" /> {product?.rating?.rate || 0}
@@ -137,7 +137,8 @@ const ProductPage = () => {
                         </div>
                         <button
                             onClick={handleAddToCart}
-                            className="flex items-center justify-center gap-x-1 bg-green-700 text-white py-3 px-6 rounded-lg"
+                            className="flex items-center justify-center gap-x-1 bg-green-700 text-white py-3 px-6 rounded-lg disabled:bg-gray-400"
+                            disabled={product?.quantity === 0}
                         >
                             <IoBagHandleOutline className="size-6" /> افزودن به سبد خرید
                         </button>

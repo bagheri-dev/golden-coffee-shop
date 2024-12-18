@@ -32,7 +32,7 @@ const CartPage = () => {
                 <>
                     <h1>سبد خرید</h1>
                     <div className="grid grid-cols-12 gap-3">
-                        <div className="relative overflow-x-auto shadow-md sm:rounded-lg col-span-12 md:col-span-9">
+                        <div className="overflow-x-auto shadow-md sm:rounded-lg col-span-12 md:col-span-9">
                             <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
                                     <tr className="child:text-center">
