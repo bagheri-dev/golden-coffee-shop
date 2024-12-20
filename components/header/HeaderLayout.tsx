@@ -2,6 +2,8 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import Cookies from "js-cookie";
+import { useRouter } from "next/navigation";
 
 import { FaMoon } from "react-icons/fa";
 import { MdWbSunny } from "react-icons/md";
@@ -18,6 +20,8 @@ import { FiShoppingCart } from "react-icons/fi";
 import { IoIosArrowBack } from "react-icons/io";
 import useCartStore from "@/store/cart";
 import ProductBoxCartHeader from "./ProductBoxCartHeader"; import useUserStore from "@/store/userStore";
+import { CiLogout } from "react-icons/ci";
+import toast from "react-hot-toast";
 ;
 
 
@@ -28,6 +32,8 @@ const HeaderLayout: React.FC = () => {
     const [isShopSubmenuOpen, setIsShopSubmenuOpen] = useState(false);
     const [IsShopMenuOpen, setIsShopMenuOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
+    const router = useRouter();
+    const logout = useUserStore((state) => state.logout);
 
     const toggleTheme = () => {
         setDarkMode((prev) => !prev);
@@ -43,7 +49,16 @@ const HeaderLayout: React.FC = () => {
         setIsMenuOpen((prev) => !prev);
     };
     const store = useUserStore();
-
+    const handleLogout = () => {
+        Cookies.remove("access_token");
+        Cookies.remove("refresh_token");
+        Cookies.remove("role");
+        logout();
+        toast.success("با موفقیت خارج شدید.")
+        setTimeout(() => {
+            router.push("/");
+        }, 1000);
+    };
 
     return (
         <>
@@ -137,8 +152,9 @@ const HeaderLayout: React.FC = () => {
                                 <span className="hidden xl:inline-block">ورود | ثبت‌نام</span>
                             </Link>
                         ) : (
-                            <div className="flex items-center gap-x-2.5 tracking-tightest">
-                                <span>سلام، {store.user}!</span>
+                            <div onClick={handleLogout} className="flex items-center gap-x-2.5 tracking-tightest cursor-pointer">
+                                <CiLogout className="w-8 h-8" />
+                                <span className="hidden xl:inline-block">خروج</span>
                             </div>
                         )}
                     </div>
@@ -246,8 +262,9 @@ const HeaderLayout: React.FC = () => {
                                     <span className="xl:inline-block">ورود | ثبت‌نام</span>
                                 </Link>
                             ) : (
-                                <div className="flex items-center gap-x-2.5 tracking-tightest">
-                                    <span>سلام، {store.user}!</span>
+                                <div onClick={handleLogout} className="flex items-center gap-x-2.5 tracking-tightest cursor-pointer">
+                                    <CiLogout className="w-8 h-8" />
+                                    <span className="hidden xl:inline-block">خروج</span>
                                 </div>
                             )}
                             <div className="cursor-pointer transition-all  inline-flex items-center gap-x-2" id="toggle-theme" onClick={toggleTheme}>
