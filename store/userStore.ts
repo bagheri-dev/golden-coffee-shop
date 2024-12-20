@@ -1,17 +1,14 @@
 import { create } from "zustand";
 
-// تعریف نوع اطلاعات کاربر
 interface UserState {
   user: string | null;
-  userDetails: Record<string, unknown> | null; // ذخیره جزئیات کاربر
+  userDetails: Record<string, unknown> | null; 
   login: (username: string, details?: Record<string, unknown>) => void;
   logout: () => void;
   register: (username: string, details?: Record<string, unknown>) => void;
 }
 
-// ایجاد store با پشتیبانی از localStorage
 const useUserStore = create<UserState>((set) => {
-  // بازیابی اطلاعات از localStorage هنگام بارگذاری اولیه
   const savedUser = localStorage.getItem("user");
   const savedUserDetails = localStorage.getItem("userDetails");
 

@@ -1,6 +1,9 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import useUserStore from "@/store/userStore";
+import Cookies from "js-cookie";
 import { FaMoon } from "react-icons/fa";
 import { MdWbSunny } from "react-icons/md";
 import { ChevronsUpDown, LogOut } from "lucide-react";
@@ -13,7 +16,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  DropdownMenuGroup,
+  // DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -25,6 +28,7 @@ import {
   SidebarMenuItem,
   useSidebar,
 } from "@/components/ui/sidebar";
+import toast from "react-hot-toast";
 
 export function NavUser({
   user,
@@ -37,6 +41,8 @@ export function NavUser({
 }) {
   const [darkMode, setDarkMode] = useState(true);
   const { isMobile } = useSidebar();
+  const router = useRouter();
+  const logout = useUserStore((state) => state.logout);
 
   useEffect(() => {
     const savedTheme = localStorage.getItem("theme");
@@ -58,6 +64,17 @@ export function NavUser({
       document.documentElement.classList.remove("dark");
       localStorage.setItem("theme", "light");
     }
+  };
+
+  const handleLogout = () => {
+    Cookies.remove("access_token");
+    Cookies.remove("refresh_token");
+    Cookies.remove("role");
+    logout();
+    toast.success("با موفقیت خارج شدید چند لحظه صبر کنید...")
+      setTimeout(() => {
+        router.push("/");
+      }, 1000);
   };
 
   return (
@@ -119,7 +136,7 @@ export function NavUser({
                 )}
               </div>
             </DropdownMenuItem>
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
               خروج از سیستم
             </DropdownMenuItem>
