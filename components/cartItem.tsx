@@ -2,6 +2,7 @@ import useCartStore from "@/store/cart";
 import { CartItems } from "@/types/products/catr";
 import Image from "next/image";
 import Link from "next/link";
+import toast from "react-hot-toast";
 
 const RowItem = ({ id, title, image, price, quantity }: CartItems) => {
     const { removeFromCart, updateQuantity } = useCartStore()
@@ -9,6 +10,13 @@ const RowItem = ({ id, title, image, price, quantity }: CartItems) => {
     const handleQuantityChange = (newQuantity: number) => {
         if (newQuantity <= 0) {
             removeFromCart(id);
+        } else if (newQuantity > quantity) {
+            const productStock = 10;
+            if (newQuantity > productStock) {
+                toast.error("مقدار درخواستی بیشتر از موجودی انبار است.");
+                return;
+            }
+            updateQuantity(id, newQuantity);
         } else {
             updateQuantity(id, newQuantity);
         }
@@ -42,6 +50,7 @@ const RowItem = ({ id, title, image, price, quantity }: CartItems) => {
                         value={quantity}
                         onChange={(e) => handleQuantityChange(Number(e.target.value))}
                         className="bg-gray-50 w-14 border border-gray-300 text-gray-900 text-sm rounded-lg px-2.5 py-1"
+                        disabled
                     />
                     <button
                         className="inline-flex items-center justify-center h-6 w-6 p-1 ms-3 text-sm font-medium text-gray-500 bg-white border border-gray-300 rounded-full hover:bg-gray-100 dark:bg-gray-800 dark:text-gray-400"
