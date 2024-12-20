@@ -17,7 +17,7 @@ const CategoryPage = () => {
     const { id } = useParams() as { id: string };
 
     const { isPending, error, data } = useQuery({
-        queryKey: ['products', id, page],
+        queryKey: ['productsCategory', id, page],
         queryFn: () => fetchAllProductsCategory(page, productsPerPage, id),
     })
     const { isLoading: isSubcategoryLoading, error: subcategoryError, data: subcategory } = useQuery({

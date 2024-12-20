@@ -59,7 +59,7 @@ const Login = () => {
     const [isSubmittingSignup, setIsSubmittingSignup] = useState(false);
     const [showPassword, setShowPassword] = useState("password")
     const [showPasswordSignup, setShowPasswordSignup] = useState("password");
-    const { login } = useUserStore();
+    const store = useUserStore();
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -88,7 +88,13 @@ const Login = () => {
             Cookies.set("refresh_token", response?.token.refreshToken ?? "", { expires: 7, secure: true });
             Cookies.set("role", response?.data.user.role ?? "");
             toast.success("ورود موفقیت‌آمیز بود!");
-            login(response?.data?.user?.lastname || "نام کاربری ناشناس");
+            store.login(response?.data?.user?.lastname || "", {
+                firstname: response?.data?.user?.firstname || "",
+                userId: response?.data.user._id || "",
+                address: response?.data.user.address || "",
+                phoneNumber: response?.data.user.phoneNumber
+            });
+
             setTimeout(() => {
                 redirect("/")
             }, 1000);
@@ -112,7 +118,13 @@ const Login = () => {
             Cookies.set("refresh_token", response?.token.refreshToken ?? "", { expires: 7, secure: true });
             Cookies.set("role", response?.data.user.role ?? "");
             toast.success("ثبت‌نام موفقیت‌آمیز بود!");
-            login(response?.data?.user?.lastname || "نام کاربری ناشناس");
+            store.register(response?.data?.user?.lastname || "", {
+                firstname: response?.data?.user?.firstname || "",
+                userId: response?.data.user._id || "",
+                address: response?.data.user.address || "",
+                phoneNumber: response?.data.user.phoneNumber
+            });
+
             setTimeout(() => {
                 redirect("/")
             }, 1000);

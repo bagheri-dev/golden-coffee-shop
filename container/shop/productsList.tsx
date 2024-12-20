@@ -38,7 +38,7 @@ const ProductsList = () => {
         )
     }
 
-    if (error) return 'An error has occurred: ' + error.message
+    if (error) return 'خطا در دریافت محصولات صفحه را رفرش کنید: ' + error.message
     const handlePreviousPage = () => {
         if (page > 1) setPage(page - 1);
     };

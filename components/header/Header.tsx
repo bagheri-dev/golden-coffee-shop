@@ -17,11 +17,17 @@ import { FiShoppingCart } from "react-icons/fi";
 import AppLogo from "../svgs/app-logo";
 import AppLogoType from "../svgs/app-logo-type";
 import useUserStore from "@/store/userStore";
+import { IoIosArrowBack } from "react-icons/io";
+import useCartStore from "@/store/cart";
+import ProductBoxCartHeader from "./ProductBoxCartHeader";
 
 
 const Header: React.FC = () => {
+    const items = useCartStore((state) => state.items);
+    const totalPrice = items.reduce((total, item) => total + item.price * item.quantity, 0);
     const [darkMode, setDarkMode] = useState(true);
     const [isShopSubmenuOpen, setIsShopSubmenuOpen] = useState(false);
+    const [IsShopMenuOpen, setIsShopMenuOpen] = useState(false);
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     useEffect(() => {
         const savedTheme = localStorage.getItem("theme");
@@ -50,10 +56,13 @@ const Header: React.FC = () => {
     const toggleShopSubmenu = () => {
         setIsShopSubmenuOpen((prev) => !prev);
     };
+    const toggleShopMenu = () => {
+        setIsShopMenuOpen((prev) => !prev);
+    };
     const toggleMenu = () => {
         setIsMenuOpen((prev) => !prev);
     };
-    const { user } = useUserStore();
+    const store = useUserStore();
 
     return (
         <>
@@ -100,9 +109,33 @@ const Header: React.FC = () => {
                             {/*Cart*/}
                             <div className="relative group">
                                 {/*Cart Icon*/}
-                                <Link href="cart" className="py-3 cursor-pointer flex items-center gap-x-1">
-                                    <FiShoppingCart className="w-8 h-8" />
+                                <Link href="cart" className="relative py-3 cursor-pointer flex items-center gap-x-1">
+                                    <FiShoppingCart className="w-8 h-8" /> <span className="absolute top-2 -right-2 bg-orange-300 size-5 rounded-full text-gray-500 text-center">{items.length}</span>
                                 </Link>
+                                <div className="absolute top-full left-0  opacity-0 invisible group-hover:opacity-100 group-hover:visible w-[400px] p-5 bg-white dark:bg-zinc-700 border-t-[3px] border-t-orange-300 shadow-normal rounded-2xl transition-all delay-75">
+                                    {/* Cart Header */}
+                                    <div className="flex items-center justify-between -tracking-tighter font-DanaMedium text-xs">
+                                        <span className="text-gray-300 ">{items.length} مورد</span>
+                                        <Link href={"/cart"} className="flex items-center text-orange-300 gap-x-1">مشاهده سبد خرید<IoIosArrowBack className="size-4" /></Link>
+                                    </div>
+                                    {/* Cart Body */}
+                                    <div className="pb-1 border-b border-b-gray-300 dark:border-b-white/10 divide-y divide-gray-100 dark:divide-white/10 child:py-5">
+                                        {items.map((item) => {
+                                            return <ProductBoxCartHeader key={item.id} id={item.id} name={item.title} images={item.image} price={item.price} quantity={item.quantity} />
+                                        })}
+                                    </div>
+                                    {/* Cart Footer */}
+                                    <div className="flex justify-between mt-5">
+                                        <div>
+                                            <span className="font-DanaMedium text-gray-300 text-xs tracking-tighter">مبلغ قابل پرداخت</span>
+                                            <div className="text-zinc-700 dark:text-white font-DanaDemiBold">
+                                                {totalPrice}
+                                                <span className="font-Dana text-sm">تومان</span>
+                                            </div>
+                                        </div>
+                                        <Link href={"#"} className="flex-center w-[144px] h-14 text-white bg-teal-600 dark:bg-emerald-500 dark:hover:bg-emerald-600 rounded-xl transition-all hover:bg-teal-700 tracking-tightest">ثبت سفارش</Link>
+                                    </div>
+                                </div>
                             </div>
                             {/*Theme Switch Btn*/}
                             <div className="cursor-pointer transition-all" id="toggle-theme" onClick={toggleTheme}>
@@ -112,14 +145,14 @@ const Header: React.FC = () => {
                         {/*Divide Border*/}
                         <span className="block w-px h-14 bg-white/20"></span>
                         {/*Login Link*/}
-                        {!user ? (
+                        {!store.user ? (
                             <Link href="/login" className="flex items-center gap-x-2.5 tracking-tightest">
                                 <RxExit className="w-8 h-8" />
                                 <span className="hidden xl:inline-block">ورود | ثبت‌نام</span>
                             </Link>
                         ) : (
                             <div className="flex items-center gap-x-2.5 tracking-tightest">
-                                <span>سلام، {user}!</span>
+                                <span>سلام، {store.user}!</span>
                             </div>
                         )}
                     </div>
@@ -210,14 +243,14 @@ const Header: React.FC = () => {
                             </li>
                         </ul>
                         <div className="flex flex-col items-start gap-y-6 text-orange-300 pt-8 px-2.5 mt-8 border-t border-t-gray-100 dark:border-t-white/10">
-                            {!user ? (
+                            {!store.user ? (
                                 <Link href="/login" className="flex items-center gap-x-2.5 tracking-tightest">
                                     <RxExit className="size-5" />
                                     <span className="xl:inline-block">ورود | ثبت‌نام</span>
                                 </Link>
                             ) : (
                                 <div className="flex items-center gap-x-2.5 tracking-tightest">
-                                    <span>سلام، {user}!</span>
+                                    <span>سلام، {store.user}!</span>
                                 </div>
                             )}
                             <div className="cursor-pointer transition-all  inline-flex items-center gap-x-2" id="toggle-theme" onClick={toggleTheme}>
@@ -236,9 +269,39 @@ const Header: React.FC = () => {
                     </Link>
                 </div>
                 {/* Cart Icon */}
-                <div className="flex items-center gap-x-1">
-                    (0)<FiShoppingCart className="w-6 h-6 text-zinc-700 dark:text-white" />
+                <div onClick={toggleShopMenu} className="flex items-center gap-x-1">
+                    {items.length}{IsShopMenuOpen ? <FaXmark /> : <FiShoppingCart className="w-6 h-6 text-zinc-700 dark:text-white" />}
                 </div>
+                {/* Cart */}
+                {IsShopMenuOpen && (
+                    <div className={`fixed top-0 bottom-0 left-0 flex  flex-col w-64 min-h-screen pt-5 px-4 bg-white dark:bg-zinc-700 z-20 transition-all duration-300 ease-in-out ${IsShopMenuOpen ? 'animate-slideIn' : 'animate-slideOut'
+                        }`}>
+                        {/* Cart Header */}
+                        <div className="flex items-center justify-between pb-5 mb-5 border-b border-b-gray-300 dark:border-b-white/10">
+                            <FaXmark className="w-5 h-5 text-zinc-600 dark:text-white" onClick={toggleShopMenu} />
+                            <span className="text-zinc-700 dark:text-white font-DanaMedium"><Link href={"/cart"}>سبد خرید</Link></span>
+                        </div>
+                        {/* Cart Body */}
+                        <div className="pb-1 border-b border-b-gray-300 dark:border-b-white/10 divide-y divide-gray-100 dark:divide-white/10 child:py-5">
+                            {items.map((item) => {
+                                return <ProductBoxCartHeader key={item.id} id={item.id} name={item.title} images={item.image} price={item.price} quantity={item.quantity} />
+                            })}
+
+                        </div>
+                        {/*Cart  Footer */}
+                        <div className="flex items-end mb-8 mt-auto">
+                            <div className="flex justify-between mt-5  gap-x-4">
+                                <Link href={"#"} className="flex-center flex-grow w-30 text-white bg-teal-600 dark:bg-emerald-500 dark:hover:bg-emerald-600 rounded-xl transition-all hover:bg-teal-700 tracking-tightest">ثبت سفارش</Link>
+                                <div>
+                                    <span className="font-DanaMedium text-gray-300 text-xs tracking-tighter">مبلغ قابل پرداخت</span>
+                                    <div className="text-zinc-700 dark:text-white font-DanaDemiBold">
+                                        {totalPrice}
+                                        <span className="font-Dana text-xs">تومان</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>)}
             </div>
             {isMenuOpen && (
                 <div className="overlay md:hidden fixed inset-0 w-full h-full z-10 bg-black/40" onClick={toggleMenu}></div>
