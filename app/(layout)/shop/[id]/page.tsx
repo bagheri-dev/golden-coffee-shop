@@ -18,6 +18,7 @@ interface Product {
     image: string;
     price: number;
     quantity: number;
+    stock: number;
 }
 
 const ProductPage = () => {
@@ -60,10 +61,10 @@ const ProductPage = () => {
                 image: product.images[0] || '',
                 price: product.price,
                 quantity: quantity,
-            };
+                stock: product.quantity,
 
+            };
             addToCart(productData, quantity);
-            toast.success("محصول به سبد خرید اضافه شد.");
             setQuantity(1);
         }
     };
@@ -106,7 +107,7 @@ const ProductPage = () => {
                     <h1 className="text-2xl font-DanaDemiBold">{product?.name}</h1>
                     <div className="flex items-center justify-between mt-8">
                         <p className="flex items-center gap-x-1">
-                            <CiBoxes className="text-4xl" /> موجودی: {product?.quantity === 0 ?  `محصول موجود نیست` : `محصول به تعداد ${product?.quantity} موجود میباشد`}
+                            <CiBoxes className="text-4xl" /> موجودی: {product?.quantity === 0 ? `محصول موجود نیست` : `محصول به تعداد ${product?.quantity} موجود میباشد`}
                         </p>
                         <p className="flex items-center text-lg">
                             <FaRegStar className="text-yellow-400" /> {product?.rating?.rate || 0}
