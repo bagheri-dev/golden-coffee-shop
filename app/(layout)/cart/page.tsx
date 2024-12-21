@@ -6,11 +6,13 @@ import RowItem from "@/components/cartItem";
 import useCartStore from "@/store/cart";
 import Link from "next/link";
 import Image from "next/image";
+import useUserStore from "@/store/userStore";
 
 const CartPage = () => {
     const { items, clearCart } = useCartStore();
     const totalPrice = items.reduce((total, item) => total + item.price * item.quantity, 0);
 
+    const store = useUserStore();
 
 
 
@@ -24,7 +26,7 @@ const CartPage = () => {
                     <div className="flex-center flex-col gap-y-3">
                         <p className="text-lg font-DanaDemiBold">متاسفانه سبد خرید شما خالی است</p>
                         <div>
-                        <Link href={"/shop"} className="flex-center w-[144px] h-14 text-white bg-teal-600 dark:bg-emerald-500 dark:hover:bg-emerald-600 rounded-xl transition-all hover:bg-teal-700 tracking-tightest">صفحه فروشگاه</Link>
+                            <Link href={"/shop"} className="flex-center w-[144px] h-14 text-white bg-teal-600 dark:bg-emerald-500 dark:hover:bg-emerald-600 rounded-xl transition-all hover:bg-teal-700 tracking-tightest">صفحه فروشگاه</Link>
                         </div>
                     </div>
                 </div>
@@ -65,7 +67,11 @@ const CartPage = () => {
                             <p className="text-center">مبلغ کل سفارش شما : {Number(totalPrice).toLocaleString()} تومان</p>
 
                             <div className="flex justify-center">
-                                <Link href={"#"} className="flex-center w-[144px] h-14 text-white bg-teal-600 dark:bg-emerald-500 dark:hover:bg-emerald-600 rounded-xl transition-all hover:bg-teal-700 tracking-tightest">ثبت سفارش</Link>
+                                {!store.user ? (
+                                    <Link href={"/login"} className="flex-center w-[144px] h-14 text-white bg-teal-600 dark:bg-emerald-500 dark:hover:bg-emerald-600 rounded-xl transition-all hover:bg-teal-700 tracking-tightest">لطفا ابتدا وارد شوید</Link>
+                                ) : (
+                                    <Link href={"/checkout"} className="flex-center w-[144px] h-14 text-white bg-teal-600 dark:bg-emerald-500 dark:hover:bg-emerald-600 rounded-xl transition-all hover:bg-teal-700 tracking-tightest">ثبت سفارش</Link>
+                                )}
                             </div>
                         </div>
                     </div>

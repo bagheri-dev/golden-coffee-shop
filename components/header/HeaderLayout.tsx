@@ -134,7 +134,11 @@ const HeaderLayout: React.FC = () => {
                                                 <span className="font-Dana text-sm">تومان</span>
                                             </div>
                                         </div>
-                                        <Link href={"#"} className="flex-center w-[144px] h-14 text-white bg-teal-600 dark:bg-emerald-500 dark:hover:bg-emerald-600 rounded-xl transition-all hover:bg-teal-700 tracking-tightest">ثبت سفارش</Link>
+                                        {!store.user ? (
+                                            <Link href={"/login"} className="flex-center w-[144px] h-14 text-white bg-teal-600 dark:bg-emerald-500 dark:hover:bg-emerald-600 rounded-xl transition-all hover:bg-teal-700 tracking-tightest">لطفا ابتدا وارد شوید</Link>
+                                        ) : (
+                                            <Link href={"/checkout"} className="flex-center w-[144px] h-14 text-white bg-teal-600 dark:bg-emerald-500 dark:hover:bg-emerald-600 rounded-xl transition-all hover:bg-teal-700 tracking-tightest">ثبت سفارش</Link>
+                                        )}
                                     </div>
                                 </div>
                             </div>
@@ -311,7 +315,11 @@ const HeaderLayout: React.FC = () => {
                         {/*Cart  Footer */}
                         <div className="flex items-end mb-8 mt-auto">
                             <div className="flex justify-between mt-5  gap-x-4">
-                                <Link href={"#"} className="flex-center flex-grow w-30 text-white bg-teal-600 dark:bg-emerald-500 dark:hover:bg-emerald-600 rounded-xl transition-all hover:bg-teal-700 tracking-tightest">ثبت سفارش</Link>
+                                {!store.user ? (
+                                    <Link href={"/login"} className="flex-center w-[144px] h-14 text-white bg-teal-600 dark:bg-emerald-500 dark:hover:bg-emerald-600 rounded-xl transition-all hover:bg-teal-700 tracking-tightest">لطفا ابتدا وارد شوید</Link>
+                                ) : (
+                                    <Link href={"/checkout"} className="flex-center w-[144px] h-14 text-white bg-teal-600 dark:bg-emerald-500 dark:hover:bg-emerald-600 rounded-xl transition-all hover:bg-teal-700 tracking-tightest">ثبت سفارش</Link>
+                                )}
                                 <div>
                                     <span className="font-DanaMedium text-gray-300 text-xs tracking-tighter">مبلغ قابل پرداخت</span>
                                     <div className="text-zinc-700 dark:text-white font-DanaDemiBold">
