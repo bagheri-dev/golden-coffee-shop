@@ -29,7 +29,7 @@ import {
 } from "@/components/ui/popover"
 import useCartStore from "@/store/cart"
 import ProductBoxCartHeader from "@/components/header/ProductBoxCartHeader"
-import Link from "next/link"
+import { redirect } from "next/navigation"
 
 const formSchema = z.object({
     firstname: z.string({ message: "فیلد" }).min(2, {
@@ -62,8 +62,9 @@ const UserInfo = () => {
         },
     })
 
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     function onSubmit(values: z.infer<typeof formSchema>) {
-        console.log(values)
+        redirect("payment")
     }
     return (
         <div className="container">
@@ -187,9 +188,9 @@ const UserInfo = () => {
                         مبلغ قابل پرداخت:
                         {totalPrice}
                     </p>
-                    <div className="flex-center">
+                    {/* <div className="flex-center">
                         <Link href={"#"} className="flex-center w-[144px] h-10 text-white bg-teal-600 dark:bg-emerald-500 dark:hover:bg-emerald-600 rounded-xl transition-all hover:bg-teal-700 tracking-tightest">پرداخت</Link>
-                    </div>
+                    </div> */}
                 </div>
             </div>
         </div>

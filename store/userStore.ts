@@ -2,10 +2,10 @@ import { create } from "zustand";
 
 interface UserState {
   user: string | null;
-  userDetails: Record<string, unknown> | null; 
-  login: (username: string, details?: Record<string, unknown>) => void;
+  userDetails: Record<string, string | undefined> | null;
+  login: (username: string, details?: Record<string, string>) => void;
   logout: () => void;
-  register: (username: string, details?: Record<string, unknown>) => void;
+  register: (username: string, details?: Record<string, string>) => void;
 }
 
 const useUserStore = create<UserState>((set) => {
@@ -23,8 +23,7 @@ const useUserStore = create<UserState>((set) => {
     },
 
     logout: () => {
-      localStorage.removeItem("user");
-      localStorage.removeItem("userDetails");
+      localStorage.clear();
       set({ user: null, userDetails: null });
     },
 
@@ -35,5 +34,6 @@ const useUserStore = create<UserState>((set) => {
     },
   };
 });
+
 
 export default useUserStore;
