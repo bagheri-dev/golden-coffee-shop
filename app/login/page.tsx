@@ -41,14 +41,14 @@ const formSchema = z.object({
     password: z.string().min(8, { message: "رمز عبور باید حداقل 8 کاراکتر باشد" }).regex(/^(?=.*[A-Za-z])(?=.*\d).+$/, { message: "رمز عبور باید شامل اعداد و حروف انگلیسی باشد" })
 });
 const formSignupSchema = z.object({
-    firstname: z.string(),
-    lastname: z.string(),
+    firstname: z.string().trim(),
+    lastname: z.string().trim(),
     username: z.string().min(2, {
         message: "نام کاربری باید بیشتر از 2 کاراکتر باشد",
-    }),
-    password: z.string().min(8, { message: "رمز عبور باید حداقل 8 کاراکتر باشد" }).regex(/^(?=.*[A-Za-z])(?=.*\d).+$/, { message: "رمز عبور باید شامل اعداد و حروف انگلیسی باشد" }),
-    phoneNumber: z.string().regex(/^(\+98|0)?9\d{9}$/, { message: "شماره نامعتبر است" }),
-    address: z.string(),
+    }).trim(),
+    password: z.string().min(8, { message: "رمز عبور باید حداقل 8 کاراکتر باشد" }).regex(/^(?=.*[A-Za-z])(?=.*\d).+$/, { message: "رمز عبور باید شامل اعداد و حروف انگلیسی باشد" }).trim(),
+    phoneNumber: z.string().regex(/^(\+98|0)?9\d{9}$/, { message: "شماره نامعتبر است" }).trim(),
+    address: z.string().trim(),
 });
 
 
@@ -87,12 +87,13 @@ const Login = () => {
             Cookies.set("access_token", response?.token.accessToken ?? "", { expires: 1, secure: true });
             Cookies.set("refresh_token", response?.token.refreshToken ?? "", { expires: 7, secure: true });
             Cookies.set("role", response?.data.user.role ?? "");
+            Cookies.set("userId", response?.data.user._id ?? "");
             toast.success("ورود موفقیت‌آمیز بود!");
             store.login(response?.data?.user?.lastname || "", {
                 firstname: response?.data?.user?.firstname || "",
                 userId: response?.data.user._id || "",
                 address: response?.data.user.address || "",
-                phoneNumber: response?.data.user.phoneNumber
+                phoneNumber: response?.data.user.phoneNumber || "",
             });
 
             setTimeout(() => {
@@ -117,14 +118,15 @@ const Login = () => {
             Cookies.set("access_token", response?.token.accessToken ?? "", { expires: 1, secure: true });
             Cookies.set("refresh_token", response?.token.refreshToken ?? "", { expires: 7, secure: true });
             Cookies.set("role", response?.data.user.role ?? "");
+            Cookies.set("userId", response?.data.user._id ?? "");
             toast.success("ثبت‌نام موفقیت‌آمیز بود!");
             store.register(response?.data?.user?.lastname || "", {
                 firstname: response?.data?.user?.firstname || "",
                 userId: response?.data.user._id || "",
                 address: response?.data.user.address || "",
-                phoneNumber: response?.data.user.phoneNumber
+                phoneNumber: response?.data.user.phoneNumber || "",
             });
-
+            console.log(data);
             setTimeout(() => {
                 redirect("/")
             }, 1000);

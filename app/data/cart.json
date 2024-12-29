@@ -1,0 +1,56 @@
+{
+  "users": [
+    {
+      "userId": "",
+      "cart": [
+        {
+          "id": "675c83ddc82fb2db41170374",
+          "title": "قهوه فرانسه ساشه‌ای",
+          "image": "products-675c83ddc82fb2db41170374-1734116317115-1.jpeg",
+          "price": 59000,
+          "quantity": 1,
+          "stock": 10
+        }
+      ]
+    },
+    {
+      "userId": "675c7c1dc82fb2db41170289",
+      "cart": [
+        {
+          "id": "675c8732c82fb2db411706d8",
+          "title": "پودر قهوه اسپرسو آرتیمان",
+          "image": "products-675c8732c82fb2db411706d8-1734117170178-1.jpeg",
+          "price": 340000,
+          "quantity": 1,
+          "stock": 15
+        }
+      ]
+    },
+    {
+      "userId": "676509034fd6b7903fb1d740",
+      "cart": [
+        {
+          "id": "675c8b74c82fb2db41170af9",
+          "title": "ایپرون با لوگوی بن‌مانو",
+          "image": "products-675c8b74c82fb2db41170af9-1734118260772-1.jpeg",
+          "price": 280000,
+          "quantity": 1,
+          "stock": 80
+        }
+      ]
+    },
+    {
+      "userId": "6771376926891574c8915edf",
+      "cart": [
+        {
+          "id": "675c85a7c82fb2db411704e4",
+          "title": "دانه قهوه اسپرسو آرنیکا",
+          "image": "products-675c85a7c82fb2db411704e4-1734116775426-1.jpeg",
+          "price": 150000,
+          "quantity": 1,
+          "stock": 18
+        }
+      ]
+    }
+  ]
+}

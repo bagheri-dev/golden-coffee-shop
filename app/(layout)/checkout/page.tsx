@@ -64,7 +64,10 @@ const UserInfo = () => {
     function onSubmit(values: z.infer<typeof formSchema>) {
         const gregorianDate = date?.toISOString();
         console.log({ ...values, date: gregorianDate });
-        redirect("payment")
+        if (gregorianDate) {
+            localStorage.setItem("orderDate", gregorianDate); // ذخیره تاریخ
+        }
+        redirect("/payment")
     }
 
     const handleDateChange = (selectedDate: Date | undefined) => {

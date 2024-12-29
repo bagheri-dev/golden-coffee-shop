@@ -1,7 +1,7 @@
 "use client"
 import Image from "next/image";
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Cookies from "js-cookie";
 import { useRouter } from "next/navigation";
 
@@ -26,6 +26,7 @@ import toast from "react-hot-toast";
 
 
 const HeaderLayout: React.FC = () => {
+    const { loadCart } = useCartStore();
     const items = useCartStore((state) => state.items);
     const totalPrice = items.reduce((total, item) => total + item.price * item.quantity, 0);
     const [darkMode, setDarkMode] = useState(true);
@@ -35,6 +36,13 @@ const HeaderLayout: React.FC = () => {
     const router = useRouter();
     const logout = useUserStore((state) => state.logout);
 
+    useEffect(() => {
+
+        const userId = Cookies.get("userId");
+        if (userId) {
+            loadCart();
+        }
+    }, [loadCart]);
     const toggleTheme = () => {
         setDarkMode((prev) => !prev);
         document.documentElement.classList.toggle("dark");
@@ -53,6 +61,7 @@ const HeaderLayout: React.FC = () => {
         Cookies.remove("access_token");
         Cookies.remove("refresh_token");
         Cookies.remove("role");
+        Cookies.remove("userId");
         logout();
         toast.success("با موفقیت خارج شدید.")
         setTimeout(() => {
