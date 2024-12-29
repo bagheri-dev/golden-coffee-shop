@@ -186,7 +186,7 @@ const UserInfo = () => {
                 </div>
                 <div className="w-1/3">
                     <p className="text-xl font-MorabbaBold">فاکتور</p>
-                    <div className="pb-1 border-b border-b-gray-300 dark:border-b-white/10 divide-y divide-gray-100 dark:divide-white/10 child:py-5">
+                    <div className="max-h-[450px] overflow-y-auto pb-1 border-b border-b-gray-300 dark:border-b-white/10 divide-y divide-gray-100 dark:divide-white/10 child:py-5">
                         {items.map((item) => {
                             return (
                                 <ProductBoxCartHeader
@@ -200,7 +200,7 @@ const UserInfo = () => {
                             );
                         })}
                     </div>
-                    <p className="text-center font-DanaDemiBold py-2">
+                    <p className="text-center font-DanaDemiBold py-4 border-b-2 border-teal-400">
                         مبلغ قابل پرداخت:
                         {totalPrice}
                     </p>

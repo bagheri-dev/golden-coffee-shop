@@ -113,7 +113,7 @@ const HeaderLayout: React.FC = () => {
                                 <Link href="/cart" className="relative py-3 cursor-pointer flex items-center gap-x-1">
                                     <FiShoppingCart className="w-8 h-8" /> <span className="absolute top-2 -right-2 bg-orange-300 size-5 rounded-full text-gray-500 text-center">{items.length}</span>
                                 </Link>
-                                <div className="absolute top-full left-0  opacity-0 invisible group-hover:opacity-100 group-hover:visible w-[400px] p-5 bg-white dark:bg-zinc-700 border-t-[3px] border-t-orange-300 shadow-normal rounded-2xl transition-all delay-75">
+                                <div className="absolute top-full left-0  opacity-0 invisible group-hover:opacity-100 group-hover:visible w-[400px] max-h-[400px] overflow-y-auto p-5 bg-white dark:bg-zinc-700 border-t-[3px] border-t-orange-300 shadow-normal rounded-2xl transition-all delay-75">
                                     {/* Cart Header */}
                                     <div className="flex items-center justify-between -tracking-tighter font-DanaMedium text-xs">
                                         <span className="text-gray-300 ">{items.length} مورد</span>

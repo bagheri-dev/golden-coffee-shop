@@ -31,7 +31,7 @@ const CartPage = () => {
                     </div>
                 </div>
             ) : (
-                <>
+                <div className="relative">
                     <h1>سبد خرید</h1>
                     <div className="grid grid-cols-12 gap-3">
                         <div className="overflow-x-auto shadow-md sm:rounded-lg col-span-12 md:col-span-9">
@@ -62,7 +62,7 @@ const CartPage = () => {
                                 </tbody>
                             </table>
                         </div>
-                        <div className="w-full flex flex-col gap-3 justify-between col-span-12 md:col-span-3 border-2 rounded-lg max-h-50 py-2 px-4 shadow">
+                        <div className="sticky top-2 w-full flex flex-col gap-3 justify-between col-span-12 md:col-span-3 border-2 rounded-lg max-h-50 py-2 px-4 shadow">
                             <span className="text-sm">تعداد محصولات انتخاب شده : {items.length}</span>
                             <p className="text-center">مبلغ کل سفارش شما : {Number(totalPrice).toLocaleString()} تومان</p>
 
@@ -75,7 +75,7 @@ const CartPage = () => {
                             </div>
                         </div>
                     </div>
-                </>
+                </div>
             )}
         </div>
     );
