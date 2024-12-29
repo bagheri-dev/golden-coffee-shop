@@ -1,10 +1,11 @@
-"use client"
+"use client";
 
-import { zodResolver } from "@hookform/resolvers/zod"
-import { useForm } from "react-hook-form"
-import { z } from "zod"
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useForm } from "react-hook-form";
+import { z } from "zod";
+import jalaali from "jalaali-js";
 
-import { Button } from "@/components/ui/button"
+import { Button } from "@/components/ui/button";
 import {
     Form,
     FormControl,
@@ -12,43 +13,41 @@ import {
     FormItem,
     FormLabel,
     FormMessage,
-} from "@/components/ui/form"
-import { Input } from "@/components/ui/input"
-import useUserStore from "@/store/userStore"
-import { Textarea } from "@/components/ui/textarea"
-import * as React from "react"
-import { format } from "date-fns"
-import { Calendar as CalendarIcon } from "lucide-react"
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import useUserStore from "@/store/userStore";
+import { Textarea } from "@/components/ui/textarea";
+import * as React from "react";
+import { Calendar as CalendarIcon } from "lucide-react";
 
-import { cn } from "@/lib/utils"
-import { Calendar } from "@/components/ui/calendar"
+import { cn } from "@/lib/utils";
+import { Calendar } from "@/components/ui/calendar";
 import {
     Popover,
     PopoverContent,
     PopoverTrigger,
-} from "@/components/ui/popover"
-import useCartStore from "@/store/cart"
-import ProductBoxCartHeader from "@/components/header/ProductBoxCartHeader"
-import { redirect } from "next/navigation"
+} from "@/components/ui/popover";
+import useCartStore from "@/store/cart";
+import ProductBoxCartHeader from "@/components/header/ProductBoxCartHeader";
+import { redirect } from "next/navigation";
 
 const formSchema = z.object({
     firstname: z.string({ message: "فیلد" }).min(2, {
-        message: "نام باید بیشتر از 3 کاراکتر باشه",
+        message: "نام باید بیشتر از 3 کاراکتر باشد",
     }),
     lastname: z.string().min(2, {
-        message: "نام خانوادگی باید بیشتر از 3 کاراکتر باشه",
+        message: "نام خانوادگی باید بیشتر از 3 کاراکتر باشد",
     }),
-    phoneNumber: z.string().regex(/^(\+98|0)?9\d{9}$/, { message: "شماره نامعتبر است" }),
+    phoneNumber: z.string().regex(/^\(\+98|0\)?9\d{9}$/, { message: "شماره نامعتبر است" }),
     address: z.string(),
-    date: z.string().min(1, { message: "لطفا تاریخ را وارد نمایید." }),
-})
+    date: z.string().min(1, { message: "لطفاً تاریخ را وارد نمایید." }),
+});
 
-
-// FC
 const UserInfo = () => {
     const items = useCartStore((state) => state.items);
     const totalPrice = items.reduce((total, item) => total + item.price * item.quantity, 0);
-    const [date, setDate] = React.useState<Date>()
+    const [date, setDate] = React.useState<Date>();
+    const [jalaliDate, setJalaliDate] = React.useState<string>("");
     const userDetails = useUserStore((state) => state.userDetails);
     const store = useUserStore();
     const form = useForm<z.infer<typeof formSchema>>({
@@ -60,16 +59,29 @@ const UserInfo = () => {
             address: userDetails?.address || "",
             date: "",
         },
-    })
+    });
 
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     function onSubmit(values: z.infer<typeof formSchema>) {
+        const gregorianDate = date?.toISOString();
+        console.log({ ...values, date: gregorianDate });
         redirect("payment")
     }
+
+    const handleDateChange = (selectedDate: Date | undefined) => {
+        if (selectedDate) {
+            setDate(selectedDate);
+            const { jy, jm, jd } = jalaali.toJalaali(selectedDate);
+            setJalaliDate(`${jy}/${jm}/${jd}`);
+            form.setValue("date", selectedDate.toISOString());
+        }
+    };
+
     return (
         <div className="container">
             <div>
-                <span className="font-MorabbaBold inline-block text-xl py-2 border-b-2">نهایی کردن خرید</span>
+                <span className="font-MorabbaBold inline-block text-xl py-2 border-b-2">
+                    نهایی کردن خرید
+                </span>
             </div>
             <div className="flex gap-5 justify-between py-4">
                 <div className="w-2/3">
@@ -150,19 +162,14 @@ const UserInfo = () => {
                                                         )}
                                                     >
                                                         <CalendarIcon className="mr-2 h-4 w-4" />
-                                                        {date ? format(date, "PPP") : <span>انتخاب تاریخ ارسال</span>}
+                                                        {jalaliDate || "انتخاب تاریخ ارسال"}
                                                     </Button>
                                                 </PopoverTrigger>
                                                 <PopoverContent className="w-auto p-0">
                                                     <Calendar
                                                         mode="single"
                                                         selected={date}
-                                                        onSelect={(selectedDate) => {
-                                                            if (selectedDate) {
-                                                                setDate(selectedDate);
-                                                                form.setValue("date", selectedDate.toISOString().split('T')[0]);
-                                                            }
-                                                        }}
+                                                        onSelect={handleDateChange}
                                                         initialFocus
                                                         disabled={(date) => date < new Date()}
                                                     />
@@ -181,20 +188,26 @@ const UserInfo = () => {
                     <p className="text-xl font-MorabbaBold">فاکتور</p>
                     <div className="pb-1 border-b border-b-gray-300 dark:border-b-white/10 divide-y divide-gray-100 dark:divide-white/10 child:py-5">
                         {items.map((item) => {
-                            return <ProductBoxCartHeader key={item.id} id={item.id} name={item.title} images={item.image} price={item.price} quantity={item.quantity} />
+                            return (
+                                <ProductBoxCartHeader
+                                    key={item.id}
+                                    id={item.id}
+                                    name={item.title}
+                                    images={item.image}
+                                    price={item.price}
+                                    quantity={item.quantity}
+                                />
+                            );
                         })}
                     </div>
                     <p className="text-center font-DanaDemiBold py-2">
                         مبلغ قابل پرداخت:
                         {totalPrice}
                     </p>
-                    {/* <div className="flex-center">
-                        <Link href={"#"} className="flex-center w-[144px] h-10 text-white bg-teal-600 dark:bg-emerald-500 dark:hover:bg-emerald-600 rounded-xl transition-all hover:bg-teal-700 tracking-tightest">پرداخت</Link>
-                    </div> */}
                 </div>
             </div>
         </div>
     );
-}
+};
 
 export default UserInfo;
