@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import jalaali from "jalaali-js";
-
+import Cookies from "js-cookie";
 import { Button } from "@/components/ui/button";
 import {
     Form,
@@ -30,6 +30,8 @@ import {
 import useCartStore from "@/store/cart";
 import ProductBoxCartHeader from "@/components/header/ProductBoxCartHeader";
 import { redirect } from "next/navigation";
+import { editUserById } from "@/apis/services/auth/auth.user";
+import toast from "react-hot-toast";
 
 const formSchema = z.object({
     firstname: z.string({ message: "فیلد" }).min(2, {
@@ -44,6 +46,7 @@ const formSchema = z.object({
 });
 
 const UserInfo = () => {
+    const userId = Cookies.get("userId");
     const items = useCartStore((state) => state.items);
     const totalPrice = items.reduce((total, item) => total + item.price * item.quantity, 0);
     const [date, setDate] = React.useState<Date>();
@@ -62,12 +65,32 @@ const UserInfo = () => {
     });
 
     function onSubmit(values: z.infer<typeof formSchema>) {
-        const gregorianDate = date?.toISOString();
-        console.log({ ...values, date: gregorianDate });
-        if (gregorianDate) {
-            localStorage.setItem("orderDate", gregorianDate); // ذخیره تاریخ
+        try {
+            const gregorianDate = date?.toISOString();
+            console.log({ ...values, date: gregorianDate });
+
+            if (gregorianDate) {
+                localStorage.setItem("orderDate", gregorianDate);
+            }
+
+            if (!userId) {
+                console.error("User ID is undefined. Cannot proceed with editing the user.");
+                return;
+            }
+
+            // eslint-disable-next-line @typescript-eslint/no-unused-vars
+            const { date: _, ...filteredValues } = values;
+
+            console.log("Filtered Values:", filteredValues);
+            editUserById(userId, filteredValues);
+            toast.success("در حال انتقال به صفحه پرداخت...")
+            setTimeout(() => {
+                redirect("/payment")
+            }, 1000);
+        } catch (error) {
+            console.log(error);
+            toast.error("خطایی رخ داده است مجدد تلاش کنید")
         }
-        redirect("/payment")
     }
 
     const handleDateChange = (selectedDate: Date | undefined) => {

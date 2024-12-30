@@ -51,3 +51,12 @@ export const fetchUserLogin = async ({
   }
 };
 
+export const editUserById = async (id : string , data : IEditUserById) => {
+  try {
+    const response = await client.patch(urls.users.byId(id) , data) 
+    console.log(response.data);
+    return response.data
+  } catch (error) {
+    console.log(error);
+  }
+}

@@ -23,3 +23,10 @@ type OrderResponse = {
     orders: Order[];
   };
 };
+
+type IEditUserById = {
+  firstname: string;
+  lastname: string;
+  phoneNumber: string;
+  address: string;
+};

@@ -6,9 +6,11 @@ import {
     TabsList,
     TabsTrigger,
 } from "@/components/ui/tabs"
-import { fetchOrders } from "@/apis/services/orders/orders.services"
+import { fetchAllOrders, fetchFalseOrders, fetchTrueOrders } from "@/apis/services/orders/orders.services"
 import { toJalaali } from 'jalaali-js';
 import { fetchByIdUser } from "@/apis/services/users/userById.services";
+import { useQuery } from "@tanstack/react-query";
+import ViewOrders from "@/container/orders/viewOrders";
 
 type User = {
     firstname: string;
@@ -17,47 +19,59 @@ type User = {
 
 const Orders = () => {
 
-    const [orders, setOrders] = useState<Order[] | null>(null);
     const [users, setUsers] = useState<Record<string, User>>({});
     const [currentPage, setCurrentPage] = useState(1);
-    const [totalPages, setTotalPages] = useState(1);
+
+    const { data: orders } = useQuery({
+        queryKey: ['repoDataAllOrders', currentPage],
+        queryFn: () => fetchAllOrders(currentPage),
+    });
+
+    const { data: trueOrders } = useQuery({
+        queryKey: ['repoDataTrueOrders'],
+        queryFn: () => fetchTrueOrders()
+    })
+    const { data: falseOrders } = useQuery({
+        queryKey: ['repoDataFalseOrders'],
+        queryFn: () => fetchFalseOrders()
+    })
 
     useEffect(() => {
-        const getOrders = async () => {
-            try {
-                const fetchedOrders = await fetchOrders(currentPage, 5);
-                if (fetchedOrders?.data?.orders) {
-                    setOrders(fetchedOrders.data.orders);
-                    setTotalPages(fetchedOrders.total_pages || 1);
-                    const userIds = [...new Set(fetchedOrders.data.orders.map((order) => order.user))];
-                    const userPromises = userIds.map((userId) =>
-                        fetchByIdUser(userId).then((userData) => ({ userId, userData }))
-                    );
-                    const usersData = await Promise.all(userPromises);
-                    const usersMap: Record<string, User> = {};
-                    usersData.forEach(({ userId, userData }) => {
-                        usersMap[userId] = userData.data.user;
-                    });
-                    setUsers(usersMap);
-                    console.log(await fetchOrders());
+        const fetchUsers = async () => {
+            if (orders) {
+                try {
+                    if (orders.data?.orders) {
+                        const userIds = [...new Set(orders.data.orders.map((order) => order.user))];
+                        const userPromises = userIds.map((userId) =>
+                            fetchByIdUser(userId).then((userData) => ({ userId, userData }))
+                        );
+                        const usersData = await Promise.all(userPromises);
+                        const usersMap: Record<string, User> = {};
+                        usersData.forEach(({ userId, userData }) => {
+                            usersMap[userId] = userData.data.user;
+                        });
+                        setUsers(usersMap);
 
+                    }
+                } catch (error) {
+                    console.error('Error fetching users:', error);
                 }
-            } catch (error) {
-                console.error("خطا در دریافت سفارش‌ها یا اطلاعات کاربران:", error);
             }
         };
-        getOrders();
-    }, [currentPage]);
 
+        fetchUsers();
+    }, [orders]);
     //  Formatted Date
     const formattedDate = (date: string): string => {
         const gregorianDate = new Date(date);
         const jalaaliDate = toJalaali(gregorianDate.getFullYear(), gregorianDate.getMonth() + 1, gregorianDate.getDate());
         return `${jalaaliDate.jy}/${jalaaliDate.jm}/${jalaaliDate.jd}`;
     };
-    
+
     const handleNextPage = () => {
-        if (currentPage < totalPages) setCurrentPage((prev) => prev + 1);
+        if (currentPage < (orders?.total_pages ?? 1)) {
+            setCurrentPage((prev) => prev + 1);
+        }
     };
 
     const handlePreviousPage = () => {
@@ -72,11 +86,11 @@ const Orders = () => {
                         <TabsTrigger value="OrdersSent" className="font-DanaDemiBold">سفارشات ارسال شده</TabsTrigger>
                         <TabsTrigger value="Orders" className="font-DanaDemiBold">همه سفارشات</TabsTrigger>
                     </TabsList>
-                    <TabsContent value="Orders awaiting shipment" className="h-full overflow-auto">
-                        <div className="relative overflow-x-auto sm:rounded-lg h-full">
-                            <table className="w-full text-sm text-gray-500 dark:text-gray-400">
+                    <TabsContent value="Orders awaiting shipment" className="h-[85%] overflow-y-scroll">
+                        <div className=" sm:rounded-lg h-full">
+                            <table className="w-full  text-sm text-gray-500 dark:text-gray-400">
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                    <tr>
+                                    <tr className="sticky top-0 bg-slate-600 text-white">
                                         <th scope="col" className="px-6 py-3 font-DanaDemiBold dark:text-white border">
                                             وضعیت سفارش
                                         </th>
@@ -91,13 +105,12 @@ const Orders = () => {
                                         </th>
                                     </tr>
                                 </thead>
-                                {orders && orders.length > 0 ? (
-                                    orders
-                                        .filter((order) => !order.deliveryStatus)
+                                {falseOrders && falseOrders.data.orders.length > 0 ? (
+                                    falseOrders.data.orders
                                         .map((order) => (
                                             <tr className="child:border child:text-center child:py-2" key={order._id}>
                                                 <td>
-                                                    <button className="border-b border-red-600" title="تغییر وضعیت به ارسال شده">{order.deliveryStatus ? "ارسال شده" : "در انتظار ارسال"}</button>
+                                                    <ViewOrders id={order._id} />
                                                 </td>
                                                 <td>{formattedDate(order.deliveryDate)}</td>
                                                 <td className="flex items-center justify-center gap-x-1">
@@ -116,37 +129,14 @@ const Orders = () => {
                                         </td>
                                     </tr>
                                 )}
-                                <tfoot>
-                                    <tr>
-                                        <td colSpan={4}>
-                                            <div className="text-center my-2">
-                                                <button
-                                                    onClick={handleNextPage}
-                                                    disabled={currentPage === totalPages}
-                                                    className="px-4 py-2 bg-gray-200 disabled:bg-gray-400 rounded"
-                                                >
-                                                    صفحه بعد
-                                                </button>
-                                                <span className="inline-block mx-2">صفحه {currentPage} از {totalPages}</span>
-                                                <button
-                                                    onClick={handlePreviousPage}
-                                                    disabled={currentPage === 1}
-                                                    className="px-4 py-2 bg-gray-200 disabled:bg-gray-400 rounded"
-                                                >
-                                                    صفحه قبل
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tfoot>
                             </table>
                         </div>
                     </TabsContent>
-                    <TabsContent value="OrdersSent" className="h-full overflow-auto">
-                        <div className="relative overflow-x-auto sm:rounded-lg h-full">
+                    <TabsContent value="OrdersSent" className="h-[85%] overflow-y-scroll">
+                        <div className="sm:rounded-lg h-full">
                             <table className="w-full text-sm text-gray-500 dark:text-gray-400">
                                 <thead className="text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400">
-                                    <tr>
+                                    <tr className="sticky top-0 bg-slate-600 text-white">
                                         <th scope="col" className="px-6 py-3 font-DanaDemiBold dark:text-white border">
                                             وضعیت سفارش
                                         </th>
@@ -161,13 +151,12 @@ const Orders = () => {
                                         </th>
                                     </tr>
                                 </thead>
-                                {orders && orders.length > 0 ? (
-                                    orders
-                                        .filter((order) => order.deliveryStatus)
+                                {trueOrders && trueOrders?.data.orders.length > 0 ? (
+                                    trueOrders.data.orders
                                         .map((order) => (
                                             <tr className="child:border child:text-center child:py-2" key={order._id}>
                                                 <td className="text-green-800">
-                                                    {order.deliveryStatus ? "ارسال شده" : "در انتظار ارسال"}✔
+                                                    <ViewOrders id={order._id} />
                                                 </td>
                                                 <td>{formattedDate(order.deliveryDate)}</td>
                                                 <td className="flex items-center justify-center gap-x-1">
@@ -186,29 +175,6 @@ const Orders = () => {
                                         </td>
                                     </tr>
                                 )}
-                                <tfoot>
-                                    <tr>
-                                        <td colSpan={4}>
-                                            <div className="text-center my-2">
-                                                <button
-                                                    onClick={handleNextPage}
-                                                    disabled={currentPage === totalPages}
-                                                    className="px-4 py-2 bg-gray-200 disabled:bg-gray-400 rounded"
-                                                >
-                                                    صفحه بعد
-                                                </button>
-                                                <span className="inline-block mx-2">صفحه {currentPage} از {totalPages}</span>
-                                                <button
-                                                    onClick={handlePreviousPage}
-                                                    disabled={currentPage === 1}
-                                                    className="px-4 py-2 bg-gray-200 disabled:bg-gray-400 rounded"
-                                                >
-                                                    صفحه قبل
-                                                </button>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tfoot>
                             </table>
                         </div>
                     </TabsContent>
@@ -231,12 +197,12 @@ const Orders = () => {
                                         </th>
                                     </tr>
                                 </thead>
-                                {orders && orders.length > 0 ? (
-                                    orders
+                                {orders && orders.data.orders.length > 0 ? (
+                                    orders.data.orders
                                         .map((order) => (
                                             <tr className="child:border child:text-center child:py-2" key={order._id}>
                                                 <td className="w-36">
-                                                    {order.deliveryStatus ? "ارسال شده" : "در انتظار ارسال"}
+                                                    <ViewOrders id={order._id} />
                                                 </td>
                                                 <td>{formattedDate(order.deliveryDate)}</td>
                                                 <td className="flex items-center justify-center gap-x-1">
@@ -261,12 +227,12 @@ const Orders = () => {
                                             <div className="text-center my-2">
                                                 <button
                                                     onClick={handleNextPage}
-                                                    disabled={currentPage === totalPages}
+                                                    disabled={currentPage === orders?.total_pages}
                                                     className="px-4 py-2 bg-gray-200 disabled:bg-gray-400 rounded"
                                                 >
                                                     صفحه بعد
                                                 </button>
-                                                <span className="inline-block mx-2">صفحه {currentPage} از {totalPages}</span>
+                                                <span className="inline-block mx-2">صفحه {currentPage} از {orders?.total_pages}</span>
                                                 <button
                                                     onClick={handlePreviousPage}
                                                     disabled={currentPage === 1}

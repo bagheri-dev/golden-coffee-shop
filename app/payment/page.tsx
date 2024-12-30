@@ -10,7 +10,6 @@ const Payment = () => {
     const router = useRouter();
     const items = useCartStore((state) => state.items);
     const userId = Cookies.get("userId");
-    console.log(userId);
 
     const payment = async () => {
         try {
