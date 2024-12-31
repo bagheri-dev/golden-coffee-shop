@@ -16,9 +16,9 @@ const ViewOrders = ({ id }: { id: string }) => {
     const mutation = useMutation({
         mutationFn: (deliveryStatus: boolean) => editOrderById(id, deliveryStatus),
         onSuccess: () => {
-            queryClient.invalidateQueries(['repoDataAllOrders']);
-            queryClient.invalidateQueries(['repoDataTrueOrders']);
-            queryClient.invalidateQueries(['repoDataFalseOrders']);
+            queryClient.invalidateQueries({ queryKey: ['repoDataAllOrders'] });
+            queryClient.invalidateQueries({ queryKey: ['repoDataTrueOrders'] });
+            queryClient.invalidateQueries({ queryKey: ['repoDataFalseOrders'] });
             toast.success("سفارش با موفقیت ارسال شد✨");
         },
         onError: () => {
@@ -49,7 +49,7 @@ const ViewOrders = ({ id }: { id: string }) => {
     };
 
     const handelEditOrder = () => {
-        const newDeliveryStatus = !order.deliveryStatus; // تغییر وضعیت به حالت مخالف
+        const newDeliveryStatus = !order.deliveryStatus;
         mutation.mutate(newDeliveryStatus);
     };
 
