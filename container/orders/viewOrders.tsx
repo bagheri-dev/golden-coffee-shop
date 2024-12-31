@@ -80,7 +80,7 @@ const ViewOrders = ({ id }: { id: string }) => {
                                     </tr>
                                 </thead>
                                 <tbody className='child:border-2'>
-                                    {order.products.map((item) => (
+                                    {order.products.map((item : OrderProduct) => (
                                         <tr key={item._id} className='child:text-center child:py-1 child:border-2'>
                                             <td>{item.product.name}</td>
                                             <td>{item.product.price.toLocaleString()} تومان</td>
