@@ -1,4 +1,3 @@
-import Image from "next/image";
 import { FaAngleDown } from "react-icons/fa";
 import Curve from "../svgs/curve";
 
