@@ -5,6 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useState } from "react";
+import { useRouter } from 'next/navigation';
 
 import { Button } from "@/components/ui/button";
 import {
@@ -24,7 +25,6 @@ import { FaRegEye } from "react-icons/fa";
 import { IoHomeOutline } from "react-icons/io5";
 import { fetchLoginAdmin } from "@/apis/services/auth/auth.admin";
 import { IAdminLogin } from "@/types/auth/adminLogin";
-import { redirect } from "next/navigation";
 import toast from 'react-hot-toast';
 import useUserStore from "@/store/userStore";
 
@@ -37,8 +37,9 @@ const formSchema = z.object({
 
 const ProfileForm = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [showPassword, setShowPassword] = useState("password")
+    const [showPassword, setShowPassword] = useState("password");
     const { login } = useUserStore();
+    const router = useRouter();
 
     const form = useForm<IAdminLogin>({
         resolver: zodResolver(formSchema),
@@ -52,7 +53,7 @@ const ProfileForm = () => {
                 password: data.password,
             });
 
-            if (response && response.status === "success") {
+            if (response && response.status === "success" && response.data?.user?.role) {
                 Cookies.set("access_token", response?.token.accessToken ?? "", { expires: 1, secure: true });
                 Cookies.set("refresh_token", response?.token.refreshToken ?? "", { expires: 7, secure: true });
                 Cookies.set("role", response?.data.user.role ?? "");
@@ -61,23 +62,22 @@ const ProfileForm = () => {
 
                 setTimeout(() => {
                     if (response.data.user.role === "ADMIN") {
-                        redirect("/admin")
+                        router.push("/admin");
                     } else {
-                        redirect("/")
+                        router.push("/");
                     }
                 }, 2000);
             }
         } catch (error: unknown) {
             if (error instanceof Error) {
-                console.error("خطا در ورود:", error.message);
+                toast.error("خطا در ورود: " + error.message);
             } else {
-                console.error("خطای ناشناخته");
+                toast.error("خطای ناشناخته در ورود");
             }
         } finally {
             setIsSubmitting(false);
         }
     };
-
 
     return (
         <div>

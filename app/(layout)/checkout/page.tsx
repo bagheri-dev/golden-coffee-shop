@@ -19,7 +19,6 @@ import useUserStore from "@/store/userStore";
 import { Textarea } from "@/components/ui/textarea";
 import * as React from "react";
 import { Calendar as CalendarIcon } from "lucide-react";
-
 import { cn } from "@/lib/utils";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -29,7 +28,7 @@ import {
 } from "@/components/ui/popover";
 import useCartStore from "@/store/cart";
 import ProductBoxCartHeader from "@/components/header/ProductBoxCartHeader";
-import { redirect } from "next/navigation";
+import { useRouter } from 'next/navigation';
 import { editUserById } from "@/apis/services/auth/auth.user";
 import toast from "react-hot-toast";
 
@@ -53,6 +52,8 @@ const UserInfo = () => {
     const [jalaliDate, setJalaliDate] = React.useState<string>("");
     const userDetails = useUserStore((state) => state.userDetails);
     const store = useUserStore();
+    const router = useRouter();
+
     const form = useForm<z.infer<typeof formSchema>>({
         resolver: zodResolver(formSchema),
         defaultValues: {
@@ -64,17 +65,21 @@ const UserInfo = () => {
         },
     });
 
-    function onSubmit(values: z.infer<typeof formSchema>) {
+    const onSubmit = async (values: z.infer<typeof formSchema>) => {
         try {
-            const gregorianDate = date?.toISOString();
-            console.log({ ...values, date: gregorianDate });
-
-            if (gregorianDate) {
-                localStorage.setItem("orderDate", gregorianDate);
+            if (!date) {
+                toast.error("لطفاً تاریخ ارسال را انتخاب کنید.");
+                return;
             }
 
+            const gregorianDate = date.toISOString();
+            console.log({ ...values, date: gregorianDate });
+
+            localStorage.setItem("orderDate", gregorianDate);
+
             if (!userId) {
-                console.error("User ID is undefined. Cannot proceed with editing the user.");
+                toast.error("لطفاً ابتدا وارد حساب کاربری خود شوید.");
+                router.push("/login");
                 return;
             }
 
@@ -82,16 +87,16 @@ const UserInfo = () => {
             const { date: _, ...filteredValues } = values;
 
             console.log("Filtered Values:", filteredValues);
-            editUserById(userId, filteredValues);
-            toast.success("در حال انتقال به صفحه پرداخت...")
+            await editUserById(userId, filteredValues);
+            toast.success("در حال انتقال به صفحه پرداخت...");
             setTimeout(() => {
-                redirect("/payment")
+                router.push("/payment");
             }, 1000);
         } catch (error) {
             console.log(error);
-            toast.error("خطایی رخ داده است مجدد تلاش کنید")
+            toast.error("خطایی رخ داده است. لطفاً دوباره تلاش کنید.");
         }
-    }
+    };
 
     const handleDateChange = (selectedDate: Date | undefined) => {
         if (selectedDate) {

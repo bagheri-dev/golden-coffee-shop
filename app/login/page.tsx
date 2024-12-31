@@ -10,6 +10,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 import { useState } from "react";
+import { useRouter } from 'next/navigation';
 
 import { Button } from "@/components/ui/button";
 import {
@@ -30,7 +31,6 @@ import { IoHomeOutline } from "react-icons/io5";
 import Link from "next/link";
 import { fetchUserLogin, fetchUserSingup } from "@/apis/services/auth/auth.user";
 import toast from "react-hot-toast";
-import { redirect } from "next/navigation";
 import useUserStore from "@/store/userStore";
 import { IAdminLogin } from "@/types/auth/adminLogin";
 
@@ -51,15 +51,13 @@ const formSignupSchema = z.object({
     address: z.string().trim(),
 });
 
-
-
-
 const Login = () => {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [isSubmittingSignup, setIsSubmittingSignup] = useState(false);
-    const [showPassword, setShowPassword] = useState("password")
+    const [showPassword, setShowPassword] = useState("password");
     const [showPasswordSignup, setShowPasswordSignup] = useState("password");
     const store = useUserStore();
+    const router = useRouter();
 
     const form = useForm({
         resolver: zodResolver(formSchema),
@@ -84,63 +82,66 @@ const Login = () => {
         setIsSubmitting(true);
         try {
             const response = await fetchUserLogin(data);
-            Cookies.set("access_token", response?.token.accessToken ?? "", { expires: 1, secure: true });
-            Cookies.set("refresh_token", response?.token.refreshToken ?? "", { expires: 7, secure: true });
-            Cookies.set("role", response?.data.user.role ?? "");
-            Cookies.set("userId", response?.data.user._id ?? "");
-            toast.success("ورود موفقیت‌آمیز بود!");
-            store.login(response?.data?.user?.lastname || "", {
-                firstname: response?.data?.user?.firstname || "",
-                userId: response?.data.user._id || "",
-                address: response?.data.user.address || "",
-                phoneNumber: response?.data.user.phoneNumber || "",
-            });
+            if (response && response.status === "success" && response.data?.user?.role) {
+                Cookies.set("access_token", response?.token.accessToken ?? "", { expires: 1, secure: true });
+                Cookies.set("refresh_token", response?.token.refreshToken ?? "", { expires: 7, secure: true });
+                Cookies.set("role", response?.data.user.role ?? "");
+                Cookies.set("userId", response?.data.user._id ?? "");
+                toast.success("ورود موفقیت‌آمیز بود!");
+                store.login(response?.data?.user?.lastname || "", {
+                    firstname: response?.data?.user?.firstname || "",
+                    userId: response?.data.user._id || "",
+                    address: response?.data.user.address || "",
+                    phoneNumber: response?.data.user.phoneNumber || "",
+                });
 
-            setTimeout(() => {
-                redirect("/")
-            }, 1000);
-
+                setTimeout(() => {
+                    router.push("/");
+                }, 1000);
+            }
         } catch (error: unknown) {
             if (error instanceof Error) {
-                console.error("خطا در ورود:", error.message);
+                toast.error("خطا در ورود: " + error.message);
             } else {
-                console.error("خطای ناشناخته");
+                toast.error("خطای ناشناخته در ورود");
             }
         } finally {
-            setIsSubmittingSignup(false);
+            setIsSubmitting(false);
         }
-        setIsSubmitting(false)
     };
+
     const onSubmitSignup = async (data: IUserSignup) => {
         setIsSubmittingSignup(true);
         try {
             const response = await fetchUserSingup(data);
-            Cookies.set("access_token", response?.token.accessToken ?? "", { expires: 1, secure: true });
-            Cookies.set("refresh_token", response?.token.refreshToken ?? "", { expires: 7, secure: true });
-            Cookies.set("role", response?.data.user.role ?? "");
-            Cookies.set("userId", response?.data.user._id ?? "");
-            toast.success("ثبت‌نام موفقیت‌آمیز بود!");
-            store.register(response?.data?.user?.lastname || "", {
-                firstname: response?.data?.user?.firstname || "",
-                userId: response?.data.user._id || "",
-                address: response?.data.user.address || "",
-                phoneNumber: response?.data.user.phoneNumber || "",
-            });
-            console.log(data);
-            setTimeout(() => {
-                redirect("/")
-            }, 1000);
-
+            if (response && response.status === "success" && response.data?.user?.role) {
+                Cookies.set("access_token", response?.token.accessToken ?? "", { expires: 1, secure: true });
+                Cookies.set("refresh_token", response?.token.refreshToken ?? "", { expires: 7, secure: true });
+                Cookies.set("role", response?.data.user.role ?? "");
+                Cookies.set("userId", response?.data.user._id ?? "");
+                toast.success("ثبت‌نام موفقیت‌آمیز بود!");
+                store.register(response?.data?.user?.lastname || "", {
+                    firstname: response?.data?.user?.firstname || "",
+                    userId: response?.data.user._id || "",
+                    address: response?.data.user.address || "",
+                    phoneNumber: response?.data.user.phoneNumber || "",
+                });
+                toast.success("شما با موفقیت ثبت نام کردید.")
+                setTimeout(() => {
+                    router.push("/");
+                }, 1000);
+            }
         } catch (error: unknown) {
             if (error instanceof Error) {
-                console.error("خطا در ورود:", error.message);
+                toast.error("خطا در ثبت‌نام: " + error.message);
             } else {
-                console.error("خطای ناشناخته");
+                toast.error("خطای ناشناخته در ثبت‌نام");
             }
         } finally {
             setIsSubmittingSignup(false);
         }
     };
+
     return (
         <div className="">
             <div className="w-full h-screen bg-[url('/images/bg/bg-login2.webp')] bg-center bg-cover flex justify-center items-center">
