@@ -86,7 +86,11 @@ const useCartStore = create<CartState>((set, get) => ({
       const data = await response.json();
       set({ items: data.cart });
     } catch (error) {
-      toast.error(error.message);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unknown error occurred");
+      }
     }
   },
   saveCart: async () => {
@@ -108,7 +112,11 @@ const useCartStore = create<CartState>((set, get) => ({
 
       if (!response.ok) throw new Error("خطا در ذخیره سبد خرید");
     } catch (error) {
-      toast.error(error.message);
+      if (error instanceof Error) {
+        toast.error(error.message);
+      } else {
+        toast.error("An unknown error occurred");
+      }
     }
   },
 }));

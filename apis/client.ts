@@ -3,8 +3,8 @@ import Cookies from "js-cookie";
 import { urls } from "./urls";
 
 export const client = axios.create({
-  baseURL: "https://final-project-server-czdkp9d41-mahdis-projects-864a6f70.vercel.app/",
-  timeout: 1000,
+  baseURL: "http://localhost:8000/api/",
+  timeout: 5000,
 });
 
 client.interceptors.request.use((config) => {
