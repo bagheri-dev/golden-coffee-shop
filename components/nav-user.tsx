@@ -16,7 +16,6 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
-  // DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -45,7 +44,7 @@ export function NavUser({
   const logout = useUserStore((state) => state.logout);
 
   useEffect(() => {
-    const savedTheme = localStorage.getItem("theme");
+    const savedTheme = typeof window !== "undefined" ? localStorage.getItem("theme") : null;
     if (savedTheme === "dark") {
       setDarkMode(true);
       document.documentElement.classList.add("dark");
@@ -57,12 +56,14 @@ export function NavUser({
 
   const toggleTheme = () => {
     setDarkMode((prev) => !prev);
-    if (!darkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
+    if (typeof window !== "undefined") {
+      if (!darkMode) {
+        document.documentElement.classList.add("dark");
+        localStorage.setItem("theme", "dark");
+      } else {
+        document.documentElement.classList.remove("dark");
+        localStorage.setItem("theme", "light");
+      }
     }
   };
 
@@ -71,10 +72,10 @@ export function NavUser({
     Cookies.remove("refresh_token");
     Cookies.remove("role");
     logout();
-    toast.success("با موفقیت خارج شدید چند لحظه صبر کنید...")
-      setTimeout(() => {
-        router.push("/");
-      }, 1000);
+    toast.success("با موفقیت خارج شدید چند لحظه صبر کنید...");
+    setTimeout(() => {
+      router.push("/");
+    }, 1000);
   };
 
   return (
@@ -122,7 +123,6 @@ export function NavUser({
                 id="toggle-theme"
                 onClick={toggleTheme}
               >
-
                 {darkMode ? (
                   <>
                     <FaMoon className="w-5 h-5" />
@@ -143,6 +143,6 @@ export function NavUser({
           </DropdownMenuContent>
         </DropdownMenu>
       </SidebarMenuItem>
-    </SidebarMenu >
+    </SidebarMenu>
   );
 }

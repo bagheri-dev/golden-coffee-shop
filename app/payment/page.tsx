@@ -4,6 +4,7 @@ import Cookies from "js-cookie";
 import toast from "react-hot-toast";
 import useCartStore from "@/store/cart";
 import axios from "axios";
+import * as React from "react";
 
 const Payment = () => {
     const { clearCart } = useCartStore();
@@ -13,7 +14,7 @@ const Payment = () => {
 
     const payment = async () => {
         try {
-            const storedDate = localStorage.getItem("orderDate");
+            const storedDate = typeof window !== "undefined" ? localStorage.getItem("orderDate") : null;
             console.log(storedDate);
 
             const orderData = {
@@ -31,7 +32,7 @@ const Payment = () => {
 
             if (response.status === 201) {
                 toast.success("پرداخت شما با موفقیت انجام شد در حال انتقال به سایت...");
-                clearCart()
+                clearCart();
                 router.push("/success-payment");
             } else {
                 toast.error("مشکلی پیش آمده است. لطفاً دوباره تلاش کنید.");

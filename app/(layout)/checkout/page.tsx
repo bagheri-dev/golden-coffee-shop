@@ -75,7 +75,9 @@ const UserInfo = () => {
             const gregorianDate = date.toISOString();
             console.log({ ...values, date: gregorianDate });
 
-            localStorage.setItem("orderDate", gregorianDate);
+            if (typeof window !== "undefined") {
+                localStorage.setItem("orderDate", gregorianDate);
+            }
 
             if (!userId) {
                 toast.error("لطفاً ابتدا وارد حساب کاربری خود شوید.");

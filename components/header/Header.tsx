@@ -25,7 +25,6 @@ import ProductBoxCartHeader from "./ProductBoxCartHeader";
 import { CiLogout } from "react-icons/ci";
 import toast from "react-hot-toast";
 
-
 const Header: React.FC = () => {
     const { loadCart } = useCartStore();
     const items = useCartStore((state) => state.items);
@@ -36,8 +35,9 @@ const Header: React.FC = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const router = useRouter();
     const logout = useUserStore((state) => state.logout);
+
     useEffect(() => {
-        const savedTheme = localStorage.getItem("theme");
+        const savedTheme = typeof window !== "undefined" ? localStorage.getItem("theme") : null;
         if (savedTheme === "dark") {
             setDarkMode(true);
             document.documentElement.classList.add("dark");
@@ -46,8 +46,8 @@ const Header: React.FC = () => {
             document.documentElement.classList.remove("dark");
         }
     }, []);
-    useEffect(() => {
 
+    useEffect(() => {
         const userId = Cookies.get("userId");
         if (userId) {
             loadCart();
@@ -57,25 +57,31 @@ const Header: React.FC = () => {
     const toggleTheme = () => {
         setDarkMode((prev) => {
             const newTheme = !prev;
-            if (newTheme) {
-                localStorage.setItem("theme", "dark");
-                document.documentElement.classList.add("dark");
-            } else {
-                localStorage.setItem("theme", "light");
-                document.documentElement.classList.remove("dark");
+            if (typeof window !== "undefined") {
+                if (newTheme) {
+                    localStorage.setItem("theme", "dark");
+                    document.documentElement.classList.add("dark");
+                } else {
+                    localStorage.setItem("theme", "light");
+                    document.documentElement.classList.remove("dark");
+                }
             }
             return newTheme;
         });
     };
+
     const toggleShopSubmenu = () => {
         setIsShopSubmenuOpen((prev) => !prev);
     };
+
     const toggleShopMenu = () => {
         setIsShopMenuOpen((prev) => !prev);
     };
+
     const toggleMenu = () => {
         setIsMenuOpen((prev) => !prev);
     };
+
     const store = useUserStore();
 
     const handleLogout = () => {
@@ -84,7 +90,7 @@ const Header: React.FC = () => {
         Cookies.remove("role");
         Cookies.remove("userId");
         logout();
-        toast.success("با موفقیت خارج شدید.")
+        toast.success("با موفقیت خارج شدید.");
         setTimeout(() => {
             router.push("/");
         }, 1000);
