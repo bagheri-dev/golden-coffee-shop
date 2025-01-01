@@ -140,7 +140,7 @@ const Products = () => {
                             <td className="px-2 py-1 flex justify-center">
                                 <Image
                                     key={item.images[0]}
-                                    src={`http://localhost:8000/images/products/images/${item.images[0]}`}
+                                    src={`https://final-project-server-delta.vercel.app/images/products/images/${item.images[0]}`}
                                     alt={item.name}
                                     className="w-16 h-16 object-cover rounded-md"
                                     width={250}

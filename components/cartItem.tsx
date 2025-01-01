@@ -29,7 +29,7 @@ const RowItem = ({ id, title, image, price, quantity }: CartItems) => {
     return (
         <tr key={id} className="child:text-center bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
             <td className="p-4">
-                <Image src={`http://localhost:8000/images/products/images/${image}`} alt={title} width={200} height={200} />
+                <Image src={`https://final-project-server-delta.vercel.app/images/products/images/${image}`} alt={title} width={200} height={200} />
             </td>
             <td className="px-6 py-4 font-semibold text-gray-900 dark:text-white">
                 <Link href={`/shop/${id}`}>{title}</Link>

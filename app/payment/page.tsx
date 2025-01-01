@@ -27,7 +27,7 @@ const Payment = () => {
                 deliveryStatus: false,
             };
 
-            const response = await axios.post("http://localhost:8000/api/orders", orderData);
+            const response = await axios.post("https://final-project-server-delta.vercel.app/api/orders", orderData);
             console.log(response);
 
             if (response.status === 201) {
