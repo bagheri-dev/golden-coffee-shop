@@ -16,7 +16,7 @@ Welcome to **Golden Coffee Shop**, an elegant and fully responsive online platfo
 - **Styling**: Tailwind CSS
 - **State Management**: Zustand
 - **Package Manager**: pnpm
-- **Backend**: Built with [Backend Repository](#) (https://github.com/bagheri-dev/golden-coffee-shop-back-end)
+- **Backend**: Built with [Backend Repository](https://github.com/bagheri-dev/golden-coffee-shop-back-end)
 - **Database**: MongoDB
 - **Authentication**: Handled on the backend side
 
@@ -61,4 +61,4 @@ This project is licensed under the MIT License.
 ---
 
 ### Author
-**Your Name** - [GitHub Profile](https://github.com/bagheri-dev)
+**bagheri-dev** - [GitHub Profile](https://github.com/bagheri-dev)
