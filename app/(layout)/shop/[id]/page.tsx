@@ -94,7 +94,7 @@ const ProductPage = () => {
                 {/* Product Image */}
                 <div className="p-5 rounded-lg border border-brown-100">
                     <Image
-                        src={`http://localhost:8000/images/products/images/${product?.images?.[0] || "/default-image.jpg"}`}
+                        src={`https://final-project-server-delta.vercel.app/images/products/images/${product?.images?.[0] || "/default-image.jpg"}`}
                         alt={product?.name || "تصویر محصول"}
                         width={427}
                         height={427}
