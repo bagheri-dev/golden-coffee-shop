@@ -3,7 +3,7 @@ import Cookies from "js-cookie";
 import { urls } from "./urls";
 
 export const client = axios.create({
-  baseURL: "http://localhost:8000/api/",
+  baseURL: "https://final-project-server-delta.vercel.app/api/",
   timeout: 5000,
 });
 
